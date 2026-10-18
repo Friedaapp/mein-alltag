@@ -1,17 +1,12 @@
-# Mein Alltag – Supabase-Version mit Synchronisierung
+# Mein Alltag – Wochenkalender
+
+Diese Version behält die Supabase-Synchronisierung für Aufgaben, Termine und Einkaufsliste bei und ergänzt eine Wochenübersicht.
 
 ## Vor dem Hochladen
-1. Öffne `index.html` mit einem Texteditor.
-2. Prüfe, ob `SUPABASE_URL` deine Supabase Project URL enthält.
-3. Prüfe, ob `SUPABASE_PUBLIC_KEY` deinen öffentlichen Publishable Key (oder den alten öffentlichen `anon`-Key) enthält.
-4. Niemals einen `service_role`- oder `secret`-Key einsetzen.
+Öffne `index.html` im Editor und prüfe die Zeilen `SUPABASE_URL` und `SUPABASE_PUBLIC_KEY`. Falls dort Platzhalter stehen, trage deine Project URL und den öffentlichen Publishable Key (oder den alten öffentlichen `anon`-Key) ein. Verwende niemals `service_role` oder `secret`.
 
 ## Hochladen
-Lade `index.html`, `manifest.json`, `sw.js` und `README.md` in dein GitHub-Repository `mein-alltag` hoch und bestätige die Änderungen. Warte danach kurz und lade die App auf PC und Android neu.
+Lade alle vier Dateien (`index.html`, `manifest.json`, `sw.js`, `README.md`) über GitHub → Add file → Upload files in das Repository `mein-alltag` hoch und bestätige mit Commit changes.
 
-## Synchronisierte Daten
-- Aufgaben: Supabase-Tabelle `tasks`
-- Termine: Supabase-Tabelle `events`
-- Einkaufsliste: Supabase-Tabelle `shopping_items`
-
-Alle drei Tabellen verwenden Row Level Security und ordnen Einträge dem angemeldeten Konto zu. Wetterdaten kommen von Open-Meteo. Sportlinks führen zu offiziellen Seiten.
+## Funktionen
+Aufgaben, Termine und Einkaufsliste werden mit Supabase synchronisiert. Die Kalenderansicht zeigt Montag bis Sonntag, mit Navigation zur vorigen und nächsten Woche sowie Schnellwahl eines Datums beim Anlegen eines Termins.

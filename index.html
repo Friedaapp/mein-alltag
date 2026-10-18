@@ -25,6 +25,20 @@ form{display:grid;gap:10px;margin:18px 0}.item{display:flex;align-items:center;g
 .item .grow{flex:1;min-width:0}.item small{display:block;color:var(--muted)}.done{text-decoration:line-through;color:var(--muted)}.delete{border:0;background:#fbe9e6;color:var(--red);border-radius:9px;padding:7px 10px;cursor:pointer}
 .hidden{display:none!important}.pill{display:inline-block;padding:4px 9px;border-radius:99px;background:var(--mint);font-size:.8rem}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-top:16px}.card{padding:15px}.card h3{margin:0 0 8px}.empty{padding:22px 0;color:var(--muted)}.status{margin-top:10px;font-size:.9rem}.status.error{color:var(--red)}.status.ok{color:#24734c}.authbox{max-width:440px;margin:8px auto}.authbox form{margin:14px 0}.authbox input{width:100%}footer{max-width:960px;margin:0 auto;padding:0 18px 24px;color:var(--muted);font-size:.82rem}
 @media(max-width:680px){main{grid-template-columns:1fr;padding:12px}nav{display:grid;grid-template-columns:repeat(3,1fr)}nav button{text-align:center;padding:9px 4px;font-size:.9rem}header{padding:20px 16px}.panel{padding:16px}}
+
+.week-controls{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:16px 0 10px;flex-wrap:wrap}
+.week-controls strong{font-size:1rem}
+.week-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:7px;margin:12px 0 18px}
+.day-column{border:1px solid var(--line);border-radius:12px;background:#fbfdfb;min-height:130px;padding:8px;min-width:0}
+.day-column.today{border-color:var(--green);box-shadow:inset 0 0 0 1px var(--green)}
+.day-heading{font-size:.78rem;color:var(--muted);margin-bottom:8px}
+.day-number{display:block;font-size:1.15rem;font-weight:700;color:var(--ink)}
+.day-event{display:block;border-radius:7px;background:var(--mint);padding:5px;margin:5px 0;font-size:.76rem;overflow-wrap:anywhere}
+.day-event time{display:block;color:var(--muted);font-size:.7rem}
+.week-empty{font-size:.75rem;color:#8a9791}
+.week-agenda{margin-top:8px}
+@media(max-width:700px){.week-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.day-column{min-height:90px}.week-controls .action{flex:1}.week-controls strong{width:100%;text-align:center}}
+
 </style>
 </head>
 <body>
@@ -56,7 +70,12 @@ form{display:grid;gap:10px;margin:18px 0}.item{display:flex;align-items:center;g
 </div>
 <div id="page-tasks" class="hidden"><h2>Aufgaben</h2><p class="muted">Diese Liste wird mit Supabase zwischen deinen Geräten synchronisiert.</p>
 <form id="taskForm"><input id="taskTitle" placeholder="Was möchtest du erledigen?" maxlength="180" required><div class="row"><select id="taskCategory"><option>Privat</option><option>Beruflich</option></select><input id="taskDue" type="date"></div><button class="action" type="submit">＋ Aufgabe speichern</button></form><div id="taskList"></div></div>
-<div id="page-events" class="hidden"><h2>Termine</h2><p class="muted">Termine werden mit deinem Konto auf deinen Geräten synchronisiert.</p><form id="eventForm"><input id="eventTitle" placeholder="Termin" maxlength="180" required><div class="row"><input id="eventDate" type="date" required><input id="eventTime" type="time"></div><button class="action">＋ Termin speichern</button></form><div id="eventList"></div></div>
+<div id="page-events" class="hidden"><h2>Kalender</h2><p class="muted">Deine Woche im Überblick. Termine werden mit deinem Konto auf deinen Geräten synchronisiert.</p>
+<div class="week-controls"><button class="action secondary" id="prevWeek" type="button">← Vorige Woche</button><strong id="weekLabel">Diese Woche</strong><button class="action secondary" id="nextWeek" type="button">Nächste Woche →</button></div>
+<div id="weekGrid" class="week-grid" aria-label="Wochenkalender"></div>
+<h3 style="margin:20px 0 4px">Termin hinzufügen</h3>
+<form id="eventForm"><input id="eventTitle" placeholder="Termin" maxlength="180" required><div class="row"><input id="eventDate" type="date" required><input id="eventTime" type="time"></div><button class="action">＋ Termin speichern</button></form>
+<h3 style="margin:20px 0 4px">Alle kommenden Termine</h3><div id="eventList" class="week-agenda"></div></div>
 <div id="page-shopping" class="hidden"><h2>Einkaufsliste</h2><p class="muted">Die Einkaufsliste wird mit deinem Konto auf deinen Geräten synchronisiert.</p><form id="shoppingForm"><input id="shoppingTitle" placeholder="Artikel hinzufügen" maxlength="180" required><button class="action">＋ Hinzufügen</button></form><div id="shoppingList"></div></div>
 <div id="page-sports" class="hidden"><h2>Mein Sport</h2><p class="muted">Offizielle Seiten deiner Teams</p><div class="grid">
 <a class="card" href="https://www.bvb.de/" target="_blank" rel="noopener"><h3>🟡 Borussia Dortmund</h3>Offizielle Website ↗</a>
@@ -81,7 +100,7 @@ const $ = id => document.getElementById(id);
 const localRead = key => { try{return JSON.parse(localStorage.getItem(key)||"[]")}catch{return []} };
 const localWrite = (key,val) => localStorage.setItem(key,JSON.stringify(val));
 function status(id,msg,error=false){$(id).textContent=msg;$(id).className="status "+(error?"error":"ok")}
-function showPage(page){document.querySelectorAll('[id^="page-"]').forEach(el=>el.classList.add('hidden'));$('page-'+page).classList.remove('hidden');document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===page));if(page==='events')renderEvents();if(page==='shopping')renderShopping();if(page==='weather')loadWeather()}
+function showPage(page){document.querySelectorAll('[id^="page-"]').forEach(el=>el.classList.add('hidden'));$('page-'+page).classList.remove('hidden');document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===page));if(page==='events'){renderEvents();if(!$('eventDate').value)$('eventDate').value=localDateString(new Date())};if(page==='shopping')renderShopping();if(page==='weather')loadWeather()}
 document.querySelectorAll('#nav button').forEach(b=>b.addEventListener('click',()=>showPage(b.dataset.page)));
 async function loadTasks(){if(!sb||!currentUser)return;status('syncStatus','Synchronisiere …');const {data,error}=await sb.from('tasks').select('*').order('created_at',{ascending:false});if(error){status('syncStatus','Synchronisierung fehlgeschlagen: '+error.message,true);return}tasks=data||[];renderTasks();updateCounts();status('syncStatus','Synchronisiert ✓')}
 function renderTasks(){const root=$('taskList');root.innerHTML='';if(!tasks.length){root.innerHTML='<div class="empty">Noch keine Aufgaben. Füge oben deine erste Aufgabe hinzu.</div>';return}for(const t of tasks){const row=document.createElement('div');row.className='item';const check=document.createElement('input');check.type='checkbox';check.checked=t.is_done;check.setAttribute('aria-label','Erledigt');check.addEventListener('change',()=>updateTask(t.id,{is_done:check.checked}));const text=document.createElement('div');text.className='grow';const title=document.createElement('span');title.textContent=t.title;title.className=t.is_done?'done':'';text.append(title);const meta=document.createElement('small');meta.textContent=t.category+(t.due_date?' · '+t.due_date:'');text.append(meta);const del=document.createElement('button');del.className='delete';del.textContent='Löschen';del.addEventListener('click',()=>deleteTask(t.id));row.append(check,text,del);root.append(row)}}
@@ -101,17 +120,40 @@ async function loadEvents(){
   if(error){status('syncStatus','Termine konnten nicht geladen werden: '+error.message,true);return}
   events=data||[];renderEvents();updateCounts();
 }
+let weekOffset=0;
+function localDateString(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function dateFromLocalString(s){const [y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d)}
 function renderEvents(){
+  renderWeek();
   const root=$('eventList');root.innerHTML='';
-  if(!events.length){root.innerHTML='<div class="empty">Noch keine Termine.</div>';return}
-  events.forEach(item=>{
+  const sorted=[...events].sort((a,b)=>(a.event_date+(a.event_time||'')).localeCompare(b.event_date+(b.event_time||'')));
+  if(!sorted.length){root.innerHTML='<div class="empty">Noch keine Termine.</div>';return}
+  sorted.forEach(item=>{
     const row=document.createElement('div');row.className='item';
     const text=document.createElement('div');text.className='grow';text.textContent=item.title;
-    const meta=document.createElement('small');meta.textContent=item.event_date+(item.event_time?' · '+String(item.event_time).slice(0,5):'');text.append(meta);
+    const meta=document.createElement('small');meta.textContent=dateFromLocalString(item.event_date).toLocaleDateString('de-DE',{weekday:'short',day:'2-digit',month:'2-digit',year:'numeric'})+(item.event_time?' · '+String(item.event_time).slice(0,5):'');text.append(meta);
     const del=document.createElement('button');del.className='delete';del.textContent='Löschen';del.onclick=()=>deleteEvent(item.id);
     row.append(text,del);root.append(row);
   });
 }
+function renderWeek(){
+ const grid=$('weekGrid');if(!grid)return;grid.innerHTML='';
+ const now=new Date();const monday=new Date(now.getFullYear(),now.getMonth(),now.getDate());const day=(monday.getDay()+6)%7;monday.setDate(monday.getDate()-day+weekOffset*7);
+ const sunday=new Date(monday);sunday.setDate(monday.getDate()+6);
+ $('weekLabel').textContent=monday.toLocaleDateString('de-DE',{day:'2-digit',month:'short'})+' – '+sunday.toLocaleDateString('de-DE',{day:'2-digit',month:'short',year:'numeric'});
+ for(let i=0;i<7;i++){
+  const date=new Date(monday);date.setDate(monday.getDate()+i);const key=localDateString(date);
+  const col=document.createElement('div');col.className='day-column'+(key===localDateString(now)?' today':'');
+  const heading=document.createElement('div');heading.className='day-heading';heading.textContent=date.toLocaleDateString('de-DE',{weekday:'short'});const number=document.createElement('span');number.className='day-number';number.textContent=date.getDate();heading.append(number);col.append(heading);
+  const todays=events.filter(e=>e.event_date===key).sort((a,b)=>(a.event_time||'').localeCompare(b.event_time||''));
+  if(!todays.length){const empty=document.createElement('div');empty.className='week-empty';empty.textContent='—';col.append(empty)}
+  todays.forEach(e=>{const item=document.createElement('div');item.className='day-event';if(e.event_time){const time=document.createElement('time');time.textContent=String(e.event_time).slice(0,5);item.append(time)}item.append(document.createTextNode(e.title));col.append(item)});
+  const add=document.createElement('button');add.type='button';add.className='action secondary';add.style.cssText='font-size:.72rem;padding:5px 7px;margin-top:7px;width:100%';add.textContent='+ Termin';add.onclick=()=>{$('eventDate').value=key;$('eventTitle').focus();$('eventForm').scrollIntoView({behavior:'smooth',block:'center'})};col.append(add);
+  grid.append(col);
+ }
+}
+$('prevWeek').addEventListener('click',()=>{weekOffset--;renderWeek()});
+$('nextWeek').addEventListener('click',()=>{weekOffset++;renderWeek()});
 async function deleteEvent(id){
   if(!confirm('Diesen Termin löschen?'))return;
   const {error}=await sb.from('events').delete().eq('id',id);
