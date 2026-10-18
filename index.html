@@ -84,14 +84,19 @@ footer{max-width:1120px}
 .home-agenda-item{padding:9px 0;border-bottom:1px solid var(--line)}
 .home-agenda-item:last-child{border-bottom:0}
 .home-date{font-size:.8rem;color:var(--muted)}
+.commute-card{display:flex;flex-direction:column;gap:10px;min-width:0}
+.commute-card p{margin:0}
+.commute-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:auto}
+.commute-actions a{display:inline-block;text-decoration:none;text-align:center;flex:1;min-width:140px}
+.commute-note{font-size:.85rem;color:var(--muted);line-height:1.45}
 .section-kicker{font-size:.75rem;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);font-weight:700}
 @media(max-width:700px){
  body{padding-bottom:118px}
  header{padding:18px 16px 20px}
  header h1{font-size:1.55rem}
  main{display:block;padding:12px}
- nav{position:fixed;z-index:20;left:10px;right:10px;bottom:9px;top:auto;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:3px;padding:7px;background:#fffefaee;backdrop-filter:blur(14px);box-shadow:0 8px 30px #26382d24;border-radius:18px}
- nav button{font-size:.76rem;text-align:center;padding:9px 2px;line-height:1.25;overflow-wrap:anywhere}
+ nav{position:fixed;z-index:20;left:10px;right:10px;bottom:9px;top:auto;display:flex;overflow-x:auto;gap:3px;padding:7px;background:#fffefaee;backdrop-filter:blur(14px);box-shadow:0 8px 30px #26382d24;border-radius:18px}
+ nav button{font-size:.76rem;text-align:center;padding:9px 8px;line-height:1.25;overflow-wrap:anywhere;flex:0 0 auto;white-space:nowrap}
  .panel{padding:16px;border-radius:18px}
  .home-grid{grid-template-columns:1fr}
  .home-card-wide{grid-column:auto}
@@ -107,12 +112,17 @@ footer{max-width:1120px}
 <nav id="nav" class="hidden" aria-label="Hauptmenü">
 <button class="active" data-page="today">☀️ Heute</button>
 <button data-page="tasks">✓ Aufgaben</button>
-<button data-page="events">📅 Termine</button>
+<button data-page="events">📅 Wochenplan</button>
 <button data-page="shopping">🛒 Einkauf</button>
 <button data-page="notes">📝 Notizen</button>
 <button data-page="football">⚽ Fußball</button>
 <button data-page="volleyball">🏐 Volleyball</button>
 <button data-page="weather">🌦️ Wetter</button>
+<button data-page="commute">🚆 Arbeitsweg</button>
+<button data-page="holidays">🏖️ Ferien</button>
+<button data-page="mealplan">🍽️ Essen</button>
+<button data-page="sportcenter">🏆 Sport-Center</button>
+<button data-page="personalize">🎨 Design</button>
 </nav>
 <section class="panel" id="auth">
 <div class="authbox">
@@ -132,6 +142,7 @@ footer{max-width:1120px}
  <div class="card home-card"><span class="section-kicker">Aufgaben offen</span><div class="home-big" id="todayOpen">–</div><div class="muted">Private und berufliche Aufgaben</div><button class="action secondary" type="button" onclick="showPage('tasks')">Aufgaben öffnen ↗</button></div>
  <div class="card home-card"><span class="section-kicker">Termine heute</span><div class="home-big" id="todayEvents">–</div><div class="muted" id="homeNextEvent">Dein Kalender für diese Woche</div><button class="action secondary" type="button" onclick="showPage('events')">Kalender öffnen ↗</button></div>
  <div class="card home-card"><span class="section-kicker">Einkaufsliste</span><div class="home-big" id="todayShopping">–</div><div class="muted">Noch offene Artikel</div><button class="action secondary" type="button" onclick="showPage('shopping')">Einkauf öffnen ↗</button></div>
+  <div class="card home-card"><span class="section-kicker">Arbeitsweg</span><div class="home-big">🚆 🚗</div><div class="muted">Bahnverbindungen und Autoroute nach Stadthagen</div><button class="action secondary" type="button" onclick="showPage('commute')">Arbeitsweg öffnen ↗</button></div>
  <div class="card home-card home-card-wide"><span class="section-kicker">Nächster Spieltag</span><h3>Deine Teams</h3><p class="muted">Öffne den Spielplan deiner Mannschaft direkt bei der Originalquelle.</p><div class="home-match-links">
  <a class="action secondary" href="https://www.kicker.de/borussia-dortmund/info/bundesliga/2026-27" target="_blank" rel="noopener">⚽ BVB ↗</a>
  <a class="action secondary" href="https://www.kicker.de/hannover-96/info/2-bundesliga/2026-27" target="_blank" rel="noopener">⚽ Hannover 96 ↗</a>
@@ -141,6 +152,8 @@ footer{max-width:1120px}
  <a class="action secondary" href="https://www.nwvv-hannover.de/cms/home/freizeitsport/frauen/frauen_a.xhtml" target="_blank" rel="noopener">🏐 Frauen ↗</a>
  </div></div>
  <div class="card home-card home-card-wide"><span class="section-kicker">Als Nächstes</span><h3>Deine Termine</h3><div id="homeAgenda"><p class="muted">Deine kommenden Termine erscheinen hier.</p></div></div>
+<div class="card home-card"><span class="section-kicker">🍽️ Wochenküche</span><div class="home-big">Essensplan</div><div class="muted">Mahlzeiten planen und Zutaten sammeln.</div><button class="action secondary" type="button" onclick="showPage('mealplan')">Essensplan öffnen ↗</button></div>
+<div class="card home-card"><span class="section-kicker">🏆 Sport im Blick</span><div class="home-big">Sport-Center</div><div class="muted">Fußball und Volleyball an einem Ort.</div><button class="action secondary" type="button" onclick="showPage('sportcenter')">Sport-Center öffnen ↗</button></div>
 </div>
 </div>
 <div id="page-tasks" class="hidden"><h2>Aufgaben</h2><p class="muted">Diese Liste wird mit Supabase zwischen deinen Geräten synchronisiert.</p>
@@ -161,11 +174,80 @@ footer{max-width:1120px}
 <label for="volleyballTeam" class="muted">Mannschaft auswählen</label><select id="volleyballTeam" style="width:100%;margin:6px 0 14px"><option value="mixed">Mixed</option><option value="men">Männer</option><option value="women">Frauen</option></select>
 <div class="row sport-tabs" id="volleyballTabs"><button class="action" data-sporttab="schedule">📅 Spielplan</button><button class="action secondary" data-sporttab="results">🏁 Ergebnisse</button><button class="action secondary" data-sporttab="table">📊 Tabelle</button></div><div id="volleyballContent" class="grid"></div>
 <p class="muted">Die aktuellen Daten liegen beim NWVV in SAMS. Öffne den Ergebnisdienst und wähle dort die passende Liga bzw. „TV Lohnde“ und deine Mannschaft aus. SAMS ist die offizielle Quelle für Spielpläne, Ergebnisse und Tabellen.</p></div>
+<div id="page-commute" class="hidden">
+  <h2>🚆 Mein Arbeitsweg</h2>
+  <p class="muted">Dein Weg zwischen Lohnde und Schachtstraße 53b in Stadthagen. Die Routen öffnen Google Maps mit den jeweiligen Start- und Zielpunkten.</p>
+  <div class="grid">
+   <article class="card commute-card"><span class="section-kicker">🚆 Bahn · Hinfahrt</span><h3>Dedensen/Gümmer → Stadthagen</h3><p class="muted">Start direkt am Bahnhof Dedensen/Gümmer, Ziel Bahnhof Stadthagen.</p><div class="commute-actions"><a class="action" href="https://www.google.com/maps/dir/?api=1&amp;origin=Bahnhof%20Dedensen-G%C3%BCmmer%2C%2030926%20Seelze%2C%20Deutschland&amp;destination=Bahnhof%20Stadthagen%2C%2031655%20Stadthagen%2C%20Deutschland&amp;travelmode=transit" target="_blank" rel="noopener">Bahn-Hinfahrt öffnen ↗</a><a class="action secondary" href="https://www.bahnhof.de/dedensen-guemmer" target="_blank" rel="noopener">Live-Abfahrten am Startbahnhof ↗</a></div></article>
+   <article class="card commute-card"><span class="section-kicker">🚆 Bahn · Rückfahrt</span><h3>Stadthagen → Dedensen/Gümmer</h3><p class="muted">Rückverbindung direkt zwischen den beiden Bahnhöfen.</p><div class="commute-actions"><a class="action" href="https://www.google.com/maps/dir/?api=1&amp;origin=Bahnhof%20Stadthagen%2C%2031655%20Stadthagen%2C%20Deutschland&amp;destination=Bahnhof%20Dedensen-G%C3%BCmmer%2C%2030926%20Seelze%2C%20Deutschland&amp;travelmode=transit" target="_blank" rel="noopener">Bahn-Rückfahrt öffnen ↗</a><a class="action secondary" href="https://www.bahnhof.de/stadthagen" target="_blank" rel="noopener">Live-Abfahrten am Startbahnhof ↗</a></div></article>
+   <article class="card commute-card"><span class="section-kicker">🚗 Auto · Hinfahrt</span><h3>Lohnde → Stadthagen</h3><p class="muted">Von Heideweg 7f, Seelze-Lohnde, zur Schachtstraße 53b in Stadthagen.</p><div class="commute-actions"><a class="action" href="https://www.google.com/maps/dir/?api=1&amp;origin=Heideweg%207f%2C%20Seelze-Lohnde%2C%20Deutschland&amp;destination=Schachtstra%C3%9Fe%2053b%2C%20Stadthagen%2C%20Deutschland&amp;travelmode=driving" target="_blank" rel="noopener">Autoroute hin ↗</a></div></article>
+   <article class="card commute-card"><span class="section-kicker">🚗 Auto · Rückfahrt</span><h3>Stadthagen → Lohnde</h3><p class="muted">Die Autoroute zurück zu deiner Wohnadresse.</p><div class="commute-actions"><a class="action" href="https://www.google.com/maps/dir/?api=1&amp;origin=Schachtstra%C3%9Fe%2053b%2C%20Stadthagen%2C%20Deutschland&amp;destination=Heideweg%207f%2C%20Seelze-Lohnde%2C%20Deutschland&amp;travelmode=driving" target="_blank" rel="noopener">Autoroute zurück ↗</a></div></article>
+  </div>
+  <article class="card" style="margin-top:16px">
+   <span class="section-kicker">📡 Bahn-Liveinformationen · kostenlos</span>
+   <h3>Aktuelle Abfahrten und Verspätungen</h3>
+   <p class="commute-note">Damit du sofort aktuelle Bahninformationen prüfen kannst, öffnen die folgenden Schaltflächen die offiziellen Bahnhofseiten der Deutschen Bahn. Dort gibt es Live-Abfahrt und Ankunft, Fahrplanänderungen und – soweit verfügbar – Informationen zu Verspätungen und Ausfällen. Die Daten werden auf der DB-Seite angezeigt, nicht direkt in dieser App.</p>
+   <div class="commute-actions" style="margin-top:12px">
+    <a class="action" href="https://www.bahnhof.de/dedensen-guemmer" target="_blank" rel="noopener">DB live: Dedensen/Gümmer ↗</a>
+    <a class="action" href="https://www.bahnhof.de/stadthagen" target="_blank" rel="noopener">DB live: Stadthagen ↗</a>
+   </div>
+   <p class="commute-note" style="margin-top:10px">Diese Lösung benötigt weder Discord noch einen API-Schlüssel und ist kostenlos nutzbar. Für eine direkte Verspätungsanzeige innerhalb der App wäre eine separat nutzbare und technisch passende Echtzeit-Datenquelle erforderlich; die ist hier bewusst nicht vorgetäuscht.</p>
+  </article>
+  <p class="commute-note">Auto: Die Google-Maps-Links öffnen die aktuelle Verkehrslage und Fahrzeit in Google Maps. Diese Daten werden nicht direkt in dieser App berechnet.</p>
+ </div>
+ <div id="page-mealplan" class="hidden">
+ <h2>🍽️ Essensplan & Rezepte</h2>
+ <p class="muted">Plane deine Mahlzeiten für die Woche. Zutaten kannst du mit einem Klick in die Einkaufsliste übernehmen.</p>
+ <div class="card" style="margin:14px 0"><h3>Mahlzeit eintragen</h3>
+  <form id="mealForm">
+   <label for="mealDate" class="muted">Tag</label><input id="mealDate" type="date" required>
+   <label for="mealType" class="muted">Mahlzeit</label><select id="mealType"><option>Frühstück</option><option>Mittagessen</option><option>Abendessen</option><option>Snack</option></select>
+   <input id="mealName" placeholder="Gericht, z. B. Gemüsepfanne" maxlength="180" required>
+   <textarea id="mealIngredients" placeholder="Zutaten, durch Kommas getrennt" rows="2" maxlength="2000" style="width:100%;resize:vertical;border:1px solid #d8dfd3;border-radius:12px;padding:12px;font:inherit;background:#fffefa;color:var(--ink)"></textarea>
+   <textarea id="mealRecipe" placeholder="Rezept / Zubereitung (optional)" rows="3" maxlength="5000" style="width:100%;resize:vertical;border:1px solid #d8dfd3;border-radius:12px;padding:12px;font:inherit;background:#fffefa;color:var(--ink)"></textarea>
+   <button class="action" type="submit">＋ Mahlzeit speichern</button>
+  </form>
+ </div>
+ <div class="row" style="align-items:center"><button class="action secondary" id="mealPrev" type="button">← Vorige Woche</button><strong id="mealWeekLabel" style="text-align:center">Diese Woche</strong><button class="action secondary" id="mealNext" type="button">Nächste Woche →</button></div>
+ <p class="muted" id="mealSyncHint">Essensplan: lokale Speicherung, bis die Supabase-Zusatztabelle eingerichtet ist.</p><div id="mealList" class="grid"></div>
+</div>
+<div id="page-sportcenter" class="hidden">
+ <div class="sport-banner"><span class="sport-ball">🏆</span><div><h3>Sport-Center</h3><p>Fußball und Volleyball – deine Teams an einem Ort</p></div></div>
+ <h2>Deine Sportarten</h2><p class="muted">Öffne aktuelle Spielpläne, Ergebnisse und Tabellen bei den Originalquellen.</p>
+ <div class="grid">
+  <article class="card"><h3>⚽ Fußball</h3><p class="muted">Borussia Dortmund, Hannover 96 und TSV Havelse.</p><button class="action" type="button" onclick="showPage('football')">Fußball öffnen ↗</button></article>
+  <article class="card"><h3>🏐 Volleyball</h3><p class="muted">TV Lohnde Frösche – Mixed, Männer und Frauen.</p><button class="action" type="button" onclick="showPage('volleyball')">Volleyball öffnen ↗</button></article>
+  <article class="card"><h3>📅 Wochenkalender</h3><p class="muted">Trage Training, Spiele und andere Termine in deinen Kalender ein.</p><button class="action" type="button" onclick="showPage('events')">Kalender öffnen ↗</button></article>
+ </div>
+</div>
+<div id="page-personalize" class="hidden">
+ <h2>🎨 Design & Personalisierung</h2><p class="muted">Passe Farben und Startansicht an. Diese Einstellungen werden auf diesem Gerät im Browser gespeichert.</p>
+ <div class="card" style="margin:14px 0"><h3>Farbstimmung</h3>
+  <div class="row"><button class="action" type="button" data-theme-choice="sage">🌿 Salbeigrün</button><button class="action secondary" type="button" data-theme-choice="blue">🌊 Blau</button><button class="action secondary" type="button" data-theme-choice="rose">🌸 Rosé</button><button class="action secondary" type="button" data-theme-choice="cream">🍦 Creme</button></div>
+  <h3 style="margin-top:18px">Startseite nach der Anmeldung</h3><select id="homePageChoice" style="width:100%;margin:6px 0 12px"><option value="today">☀️ Heute</option><option value="events">📅 Wochenplan</option><option value="mealplan">🍽️ Essensplan</option><option value="sportcenter">🏆 Sport-Center</option><option value="commute">🚆 Arbeitsweg</option></select>
+  <button class="action" id="savePersonalization" type="button">Einstellungen speichern</button><p id="personalizeStatus" class="status" role="status"></p>
+ </div><p class="muted">Hinweis: Personalisierung wird zunächst nur auf diesem Gerät gespeichert; die übrigen App-Daten bleiben wie bisher in Supabase.</p>
+</div>
+<div id="page-holidays" class="hidden">
+ <h2>🏖️ Ferien-Countdowns Niedersachsen</h2>
+ <p class="muted">Alle offiziellen niedersächsischen Schulferien und zusätzlichen unterrichtsfreien Ferientage. Die Anzeige aktualisiert sich automatisch anhand des heutigen Datums.</p>
+ <div class="card" style="margin:14px 0">
+  <div class="section-kicker">Als Nächstes</div>
+  <div id="nextHolidayCountdown"><p class="muted">Countdown wird berechnet …</p></div>
+ </div>
+ <div class="row" style="align-items:center;flex-wrap:wrap">
+  <label for="holidayYear" class="muted">Jahr anzeigen</label>
+  <select id="holidayYear"><option value="2026">2026</option><option value="2027">2027</option><option value="2028">2028</option><option value="2029">2029</option><option value="2030">2030</option></select>
+ </div>
+ <div id="holidayCountdownList" class="grid" style="margin-top:12px"></div>
+ <p class="muted" style="margin-top:16px">Quelle der Ferientermine: Niedersächsisches Kultusministerium. Individuelle bewegliche Ferientage einzelner Schulen können abweichen.</p>
+ <p><a href="https://www.mk.niedersachsen.de/startseite/service/ferientermine/schulferien-und-religiose-feiertage-6491.html" target="_blank" rel="noopener">Offizielle Ferienübersicht Niedersachsen ↗</a></p>
+</div>
 <div id="page-weather" class="hidden"><h2>Wetter</h2><p class="muted">Aktuelles Wetter und Vorhersage über Open-Meteo.</p><form id="weatherForm"><input id="weatherCity" value="Lohnde" placeholder="Ort"><button class="action">Wetter laden</button></form><div id="weatherResult" class="grid"></div><p id="weatherStatus" class="status"></p></div>
 <div style="border-top:1px solid var(--line);margin-top:22px;padding-top:14px"><button id="logoutBtn" class="action secondary">Abmelden</button><span id="syncStatus" class="muted" style="margin-left:10px"></span></div>
 </section>
 </main>
-<footer>Deine Aufgaben liegen in deinem Supabase-Konto. Aufgaben, Termine und Einkaufsliste werden mit deinem Supabase-Konto synchronisiert.</footer>
+<footer>Deine Aufgaben liegen in deinem Supabase-Konto. Aufgaben, Termine, Einkaufsliste und Notizen werden mit deinem Supabase-Konto synchronisiert. Arbeitsweg-Routen sind Links und benötigen keine zusätzliche Synchronisierung.</footer>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 /* SCHRITT: Trage hier deine Supabase Project URL und den öffentlichen Publishable/anon Key ein.
@@ -178,7 +260,7 @@ const $ = id => document.getElementById(id);
 const localRead = key => { try{return JSON.parse(localStorage.getItem(key)||"[]")}catch{return []} };
 const localWrite = (key,val) => localStorage.setItem(key,JSON.stringify(val));
 function status(id,msg,error=false){$(id).textContent=msg;$(id).className="status "+(error?"error":"ok")}
-function showPage(page){document.querySelectorAll('[id^="page-"]').forEach(el=>el.classList.add('hidden'));$('page-'+page).classList.remove('hidden');document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===page));if(page==='events'){renderEvents();if(!$('eventDate').value)$('eventDate').value=localDateString(new Date())};if(page==='shopping')renderShopping();if(page==='notes')renderNotes();if(page==='weather')loadWeather();if(page==='football')renderFootball();if(page==='volleyball')renderVolleyball()}
+function showPage(page){document.querySelectorAll('[id^="page-"]').forEach(el=>el.classList.add('hidden'));$('page-'+page).classList.remove('hidden');document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===page));if(page==='events'){renderEvents();if(!$('eventDate').value)$('eventDate').value=localDateString(new Date())};if(page==='shopping')renderShopping();if(page==='notes')renderNotes();if(page==='weather')loadWeather();if(page==='football')renderFootball();if(page==='volleyball')renderVolleyball();if(page==='mealplan'){renderMeals();if(!$('mealDate').value)$('mealDate').value=localDateString(new Date())}if(page==='holidays')renderHolidayCountdowns()}
 document.querySelectorAll('#nav button').forEach(b=>b.addEventListener('click',()=>showPage(b.dataset.page)));
 async function loadTasks(){if(!sb||!currentUser)return;status('syncStatus','Synchronisiere …');const {data,error}=await sb.from('tasks').select('*').order('created_at',{ascending:false});if(error){status('syncStatus','Synchronisierung fehlgeschlagen: '+error.message,true);return}tasks=data||[];renderTasks();updateCounts();status('syncStatus','Synchronisiert ✓')}
 function renderTasks(){const root=$('taskList');root.innerHTML='';if(!tasks.length){root.innerHTML='<div class="empty">Noch keine Aufgaben. Füge oben deine erste Aufgabe hinzu.</div>';return}for(const t of tasks){const row=document.createElement('div');row.className='item';const check=document.createElement('input');check.type='checkbox';check.checked=t.is_done;check.setAttribute('aria-label','Erledigt');check.addEventListener('change',()=>updateTask(t.id,{is_done:check.checked}));const text=document.createElement('div');text.className='grow';const title=document.createElement('span');title.textContent=t.title;title.className=t.is_done?'done':'';text.append(title);const meta=document.createElement('small');meta.textContent=t.category+(t.due_date?' · '+t.due_date:'');text.append(meta);const del=document.createElement('button');del.className='delete';del.textContent='Löschen';del.addEventListener('click',()=>deleteTask(t.id));row.append(check,text,del);root.append(row)}}
@@ -208,7 +290,7 @@ function updateCounts(){
 }
 $('authForm').addEventListener('submit',async e=>{e.preventDefault();if(!configured){status('authStatus','Bitte trage zuerst Project URL und Publishable Key im Code ein.',true);return}const {error}=await sb.auth.signInWithPassword({email:$('email').value.trim(),password:$('password').value});if(error){status('authStatus',error.message,true);return}status('authStatus','Anmeldung erfolgreich.');});
 $('signupBtn').addEventListener('click',async()=>{if(!configured){status('authStatus','Bitte trage zuerst Project URL und Publishable Key im Code ein.',true);return}const email=$('email').value.trim(),password=$('password').value;if(!email||password.length<6){status('authStatus','Bitte E-Mail und ein Passwort mit mindestens 6 Zeichen eingeben.',true);return}const {data,error}=await sb.auth.signUp({email,password,options:{emailRedirectTo:location.origin+location.pathname}});if(error){status('authStatus',error.message,true);return}status('authStatus',data.session?'Konto erstellt und angemeldet.':'Konto erstellt. Bitte prüfe deine E-Mails und bestätige die Adresse.');});
-async function setSession(session){currentUser=session?.user||null;$('auth').classList.toggle('hidden',!!currentUser);$('app').classList.toggle('hidden',!currentUser);$('nav').classList.toggle('hidden',!currentUser);if(currentUser){await Promise.all([loadTasks(),loadEvents(),loadShopping(),loadNotes()]);updateCounts()}else{tasks=[];events=[];shoppingItems=[];notes=[];updateCounts()}}
+async function setSession(session){currentUser=session?.user||null;$('auth').classList.toggle('hidden',!!currentUser);$('app').classList.toggle('hidden',!currentUser);$('nav').classList.toggle('hidden',!currentUser);if(currentUser){await Promise.all([loadTasks(),loadEvents(),loadShopping(),loadNotes(),loadMeals()]);updateCounts();let preferred='today';try{preferred=localStorage.getItem('meinAlltagHome')||'today'}catch{}if(document.getElementById('page-'+preferred))showPage(preferred)}else{tasks=[];events=[];shoppingItems=[];notes=[];updateCounts()}}
 $('logoutBtn').addEventListener('click',async()=>{if(sb)await sb.auth.signOut();});
 if(configured){sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLIC_KEY);sb.auth.onAuthStateChange((_event,session)=>{setTimeout(()=>setSession(session),0)});sb.auth.getSession().then(({data})=>setSession(data.session));}
 
@@ -336,6 +418,157 @@ async function deleteNote(id){
  if(error){status('syncStatus','Notiz konnte nicht gelöscht werden: '+error.message,true);return}
  await loadNotes();status('syncStatus','Notiz gelöscht ✓');
 }
+
+// Essensplan: Supabase-Synchronisierung über meal_plans, mit lokalem Fallback falls Tabelle noch fehlt.
+let meals=[];let mealWeekOffset=0;
+function mealLocalKey(){return 'meinAlltagMeals_'+(currentUser?.id||'local')}
+function readLocalMeals(){try{return JSON.parse(localStorage.getItem(mealLocalKey())||'[]')}catch{return []}}
+function writeLocalMeals(){try{localStorage.setItem(mealLocalKey(),JSON.stringify(meals))}catch{}}
+async function loadMeals(){
+ if(sb&&currentUser){
+  const {data,error}=await sb.from('meal_plans').select('*').order('meal_date',{ascending:true});
+  if(!error){meals=data||[];$('mealSyncHint').textContent='Essensplan wird mit Supabase synchronisiert ✓';renderMeals();return}
+  $('mealSyncHint').textContent='Supabase-Zusatztabelle fehlt noch; Mahlzeiten werden vorläufig auf diesem Gerät gespeichert.';
+ }
+ meals=readLocalMeals();renderMeals();
+}
+function mealMonday(offset){const d=new Date();d.setHours(12,0,0,0);d.setDate(d.getDate()-((d.getDay()+6)%7)+offset*7);return d}
+function renderMeals(){
+ const root=$('mealList');if(!root)return;root.innerHTML='';
+ const monday=mealMonday(mealWeekOffset),sunday=new Date(monday);sunday.setDate(monday.getDate()+6);
+ $('mealWeekLabel').textContent=monday.toLocaleDateString('de-DE',{day:'2-digit',month:'short'})+' – '+sunday.toLocaleDateString('de-DE',{day:'2-digit',month:'short',year:'numeric'});
+ const from=localDateString(monday),to=localDateString(sunday);
+ const week=meals.filter(m=>m.meal_date>=from&&m.meal_date<=to).sort((a,b)=>(a.meal_date+a.meal_type).localeCompare(b.meal_date+b.meal_type));
+ if(!week.length){root.innerHTML='<div class="empty">Für diese Woche sind noch keine Mahlzeiten geplant.</div>';return}
+ week.forEach(m=>{
+  const card=document.createElement('article');card.className='card';
+  const date=document.createElement('div');date.className='section-kicker';date.textContent=dateFromLocalString(m.meal_date).toLocaleDateString('de-DE',{weekday:'long',day:'2-digit',month:'2-digit'})+' · '+m.meal_type;
+  const title=document.createElement('h3');title.textContent=m.meal_name||'Mahlzeit';card.append(date,title);
+  if(m.ingredients){const ing=document.createElement('p');ing.className='muted';ing.textContent='Zutaten: '+m.ingredients;card.append(ing)}
+  if(m.recipe){const rec=document.createElement('p');rec.style.whiteSpace='pre-wrap';rec.textContent=m.recipe;card.append(rec)}
+  if(m.ingredients){const add=document.createElement('button');add.className='action secondary';add.type='button';add.textContent='Zutaten zur Einkaufsliste';add.onclick=()=>addMealIngredients(m.ingredients);card.append(add)}
+  const del=document.createElement('button');del.className='delete';del.style.marginTop='8px';del.textContent='Mahlzeit löschen';del.onclick=()=>deleteMeal(m.id);card.append(del);root.append(card);
+ });
+}
+async function addMealIngredients(text){
+ if(!currentUser||!sb){alert('Bitte zuerst anmelden, um Zutaten in die synchronisierte Einkaufsliste zu übernehmen.');return}
+ const items=text.split(/[,;\n]/).map(x=>x.trim()).filter(Boolean);if(!items.length)return;
+ const {error}=await sb.from('shopping_items').insert(items.map(title=>({title,is_done:false,user_id:currentUser.id})));
+ if(error){status('syncStatus','Zutaten konnten nicht übernommen werden: '+error.message,true);return}
+ await loadShopping();alert(items.length+' Zutat/Zutaten wurden zur Einkaufsliste hinzugefügt.');
+}
+$('mealForm')?.addEventListener('submit',async e=>{
+ e.preventDefault();const meal={meal_date:$('mealDate').value,meal_type:$('mealType').value,meal_name:$('mealName').value.trim(),ingredients:$('mealIngredients').value.trim(),recipe:$('mealRecipe').value.trim(),user_id:currentUser?.id||null};
+ if(!meal.meal_date||!meal.meal_name)return;
+ if(sb&&currentUser){
+  const {error}=await sb.from('meal_plans').insert(meal);
+  if(!error){$('mealName').value='';$('mealIngredients').value='';$('mealRecipe').value='';await loadMeals();status('syncStatus','Mahlzeit synchronisiert ✓');return}
+  $('mealSyncHint').textContent='Supabase-Zusatztabelle fehlt noch; Mahlzeit wird lokal gespeichert.';
+ }
+ meal.id='local_'+Date.now();meals.push(meal);writeLocalMeals();$('mealName').value='';$('mealIngredients').value='';$('mealRecipe').value='';renderMeals();
+});
+async function deleteMeal(id){
+ if(!confirm('Diese Mahlzeit löschen?'))return;
+ if(sb&&currentUser&&!String(id).startsWith('local_')){
+  const {error}=await sb.from('meal_plans').delete().eq('id',id);
+  if(error){alert('Mahlzeit konnte nicht gelöscht werden: '+error.message);return}
+  await loadMeals();return;
+ }
+ meals=meals.filter(m=>m.id!==id);writeLocalMeals();renderMeals();
+}
+$('mealPrev')?.addEventListener('click',()=>{mealWeekOffset--;renderMeals()});
+$('mealNext')?.addEventListener('click',()=>{mealWeekOffset++;renderMeals()});
+
+// Personalisierung: lokal im Browser, ohne zusätzliche Supabase-Tabelle.
+const themes={
+ sage:{bg:'#f7f0df',card:'#fffdf6',ink:'#29372c',muted:'#6f7769',green:'#42633f',mint:'#e5edda',line:'#e8dcc2'},
+ blue:{bg:'#eef4f8',card:'#ffffff',ink:'#223449',muted:'#607387',green:'#315b7d',mint:'#dceaf4',line:'#d6e2ec'},
+ rose:{bg:'#fbf0f0',card:'#fffafa',ink:'#493037',muted:'#806a70',green:'#8a4c61',mint:'#f2dfe5',line:'#ead5dc'},
+ cream:{bg:'#fbf5e9',card:'#fffdf8',ink:'#3c3529',muted:'#7d7464',green:'#6d6045',mint:'#eee5d3',line:'#e9ddc8'}
+};
+let selectedTheme='sage';
+function applyTheme(name){selectedTheme=themes[name]?name:'sage';Object.entries(themes[selectedTheme]).forEach(([k,v])=>document.documentElement.style.setProperty('--'+k,v));try{localStorage.setItem('meinAlltagTheme',selectedTheme)}catch{}}
+function loadPersonalization(){let home='today';try{applyTheme(localStorage.getItem('meinAlltagTheme')||'sage');home=localStorage.getItem('meinAlltagHome')||'today'}catch{}if($('homePageChoice'))$('homePageChoice').value=home}
+document.querySelectorAll('[data-theme-choice]').forEach(btn=>btn.addEventListener('click',()=>{applyTheme(btn.dataset.themeChoice);document.querySelectorAll('[data-theme-choice]').forEach(b=>b.className='action'+(b.dataset.themeChoice===selectedTheme?'':' secondary'));$('personalizeStatus').textContent='Farben angewendet. Zum Speichern bitte unten klicken.'}));
+$('savePersonalization')?.addEventListener('click',()=>{try{localStorage.setItem('meinAlltagHome',$('homePageChoice').value);localStorage.setItem('meinAlltagTheme',selectedTheme)}catch{}$('personalizeStatus').textContent='Einstellungen auf diesem Gerät gespeichert ✓'});
+loadPersonalization();
+
+
+// Amtliche Schulferientermine Niedersachsen (Kultusministerium), 2026–2030.
+const niedersachsenHolidays=[
+ {name:'Herbstferien',start:'2026-10-12',end:'2026-10-24'},
+ {name:'Weihnachtsferien',start:'2026-12-23',end:'2027-01-09'},
+ {name:'Halbjahresferien',start:'2027-02-01',end:'2027-02-02'},
+ {name:'Osterferien',start:'2027-03-22',end:'2027-04-03'},
+ {name:'Tag nach Himmelfahrt',start:'2027-05-07',end:'2027-05-07'},
+ {name:'Pfingstferien',start:'2027-05-18',end:'2027-05-18'},
+ {name:'Sommerferien',start:'2027-07-08',end:'2027-08-18'},
+ {name:'Herbstferien',start:'2027-10-16',end:'2027-10-30'},
+ {name:'Weihnachtsferien',start:'2027-12-23',end:'2028-01-08'},
+ {name:'Halbjahresferien',start:'2028-01-31',end:'2028-02-01'},
+ {name:'Osterferien',start:'2028-04-10',end:'2028-04-22'},
+ {name:'Tag nach Himmelfahrt',start:'2028-05-26',end:'2028-05-26'},
+ {name:'Pfingstferien',start:'2028-06-06',end:'2028-06-06'},
+ {name:'Sommerferien',start:'2028-07-20',end:'2028-08-30'},
+ {name:'Zusätzlicher schulfreier Tag vor dem 3. Oktober',start:'2028-10-02',end:'2028-10-02'},
+ {name:'Herbstferien',start:'2028-10-23',end:'2028-11-04'},
+ {name:'Weihnachtsferien',start:'2028-12-27',end:'2029-01-06'},
+ {name:'Halbjahresferien',start:'2029-02-01',end:'2029-02-02'},
+ {name:'Osterferien',start:'2029-03-19',end:'2029-04-03'},
+ {name:'Zusätzlicher schulfreier Tag vor dem 1. Mai',start:'2029-04-30',end:'2029-04-30'},
+ {name:'Tag nach Himmelfahrt',start:'2029-05-11',end:'2029-05-11'},
+ {name:'Pfingstferien',start:'2029-05-22',end:'2029-05-22'},
+ {name:'Sommerferien',start:'2029-07-19',end:'2029-08-29'},
+ {name:'Zusätzliche schulfreie Tage im Oktober',start:'2029-10-04',end:'2029-10-05'},
+ {name:'Herbstferien',start:'2029-10-22',end:'2029-11-02'},
+ {name:'Weihnachtsferien',start:'2029-12-21',end:'2030-01-05'},
+ {name:'Halbjahresferien',start:'2030-01-31',end:'2030-02-01'},
+ {name:'Osterferien',start:'2030-04-08',end:'2030-04-23'},
+ {name:'Tag nach Himmelfahrt',start:'2030-05-31',end:'2030-05-31'},
+ {name:'Pfingstferien',start:'2030-06-11',end:'2030-06-11'},
+ {name:'Sommerferien',start:'2030-07-11',end:'2030-08-21'}
+];
+function holidayDate(s){const [y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d,12,0,0,0)}
+function holidayDayDiff(a,b){return Math.round((holidayDate(b)-holidayDate(a))/86400000)}
+function holidayFmt(s){return holidayDate(s).toLocaleDateString('de-DE',{day:'2-digit',month:'long',year:'numeric'})}
+function holidayState(h,today){
+ const start=holidayDate(h.start),end=holidayDate(h.end);today.setHours(12,0,0,0);
+ if(today<start){const n=Math.ceil((start-today)/86400000);return {kind:'before',days:n,text:n===1?'Noch 1 Tag bis zum Beginn':'Noch '+n+' Tage bis zum Beginn'}}
+ if(today<=end){const n=Math.ceil((end-today)/86400000);return {kind:'during',days:n,text:n===0?'Heute ist der letzte Ferientag':n===1?'Noch 1 Tag Ferien':'Noch '+n+' Tage Ferien'}}
+ return {kind:'past',days:0,text:'Bereits vorbei'}
+}
+function renderHolidayCountdowns(){
+ const list=$('holidayCountdownList'),hero=$('nextHolidayCountdown'),yearSelect=$('holidayYear');if(!list||!hero||!yearSelect)return;
+ const now=new Date();const today=new Date(now.getFullYear(),now.getMonth(),now.getDate(),12);
+ let year=Number(yearSelect.value)||now.getFullYear();
+ if(!Array.from(yearSelect.options).some(o=>Number(o.value)===now.getFullYear()))yearSelect.value=String(year);
+ const upcoming=niedersachsenHolidays.filter(h=>holidayDate(h.end)>=today).sort((a,b)=>holidayDate(a.start)-holidayDate(b.start));
+ const current=upcoming.find(h=>holidayDate(h.start)<=today&&holidayDate(h.end)>=today);
+ const next=current||upcoming[0];
+ if(next){
+  const st=holidayState(next,today);
+  hero.innerHTML='';
+  const title=document.createElement('h3');title.textContent=next.name;
+  const dates=document.createElement('p');dates.className='muted';dates.textContent=holidayFmt(next.start)+(next.start!==next.end?' – '+holidayFmt(next.end):'');
+  const count=document.createElement('div');count.className='home-big';count.textContent=st.kind==='during'?'🏖️ '+st.text:'⏳ '+st.text;
+  hero.append(title,dates,count);
+ }else hero.textContent='Für die kommenden Jahre sind noch keine weiteren Termine hinterlegt.';
+ list.innerHTML='';
+ const entries=niedersachsenHolidays.filter(h=>holidayDate(h.start).getFullYear()===year||holidayDate(h.end).getFullYear()===year);
+ if(!entries.length){list.innerHTML='<div class="empty">Für dieses Jahr sind keine Termine hinterlegt.</div>';return}
+ entries.forEach(h=>{
+  const st=holidayState(h,new Date(today));
+  const card=document.createElement('article');card.className='card';
+  const name=document.createElement('h3');name.textContent=h.name;
+  const dates=document.createElement('p');dates.className='muted';dates.textContent=holidayFmt(h.start)+(h.start!==h.end?' – '+holidayFmt(h.end):'');
+  const count=document.createElement('div');count.className='home-big';count.style.fontSize='1.05rem';count.textContent=st.text;
+  if(st.kind==='during')count.style.color='var(--green)';
+  if(st.kind==='past')count.style.opacity='.55';
+  card.append(name,dates,count);list.append(card);
+ });
+}
+$('holidayYear')?.addEventListener('change',renderHolidayCountdowns);
+
 const codes={0:'Klar',1:'Überwiegend klar',2:'Teilweise bewölkt',3:'Bedeckt',45:'Neblig',48:'Nebel',51:'Leichter Nieselregen',61:'Leichter Regen',63:'Regen',65:'Starker Regen',71:'Leichter Schnee',80:'Regenschauer',95:'Gewitter'};
 const footballSources={
  bvb:{name:'Borussia Dortmund',schedule:'https://www.kicker.de/borussia-dortmund/info/bundesliga/2026-27',results:'https://www.kicker.de/borussia-dortmund/info/bundesliga/2026-27',table:'https://www.kicker.de/bundesliga/tabelle'},
