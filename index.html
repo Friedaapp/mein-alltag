@@ -127,6 +127,22 @@ footer{max-width:1120px}
   }
 }
 
+
+.daily-focus{grid-column:1/-1}
+.daily-focus-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-top:10px}
+.daily-focus-grid>div{padding:12px;border-radius:14px;background:var(--mint);min-width:0}
+.daily-focus-grid strong{display:block;margin-bottom:6px}
+.text-action{border:0;background:transparent;color:var(--green);font:inherit;font-weight:650;padding:7px 0;cursor:pointer}
+.day-column{display:flex;flex-direction:column;gap:3px}
+.day-heading{display:flex;align-items:center;justify-content:space-between;font-weight:650}
+.day-number{display:inline-flex;align-items:center;justify-content:center;min-width:28px;height:28px;border-radius:50%;background:var(--mint);font-size:1rem}
+.day-column.today .day-number{background:var(--green);color:white}
+.day-event{line-height:1.25}
+.day-task{background:#f8e9cf;border:1px solid #eed6a9}
+.holiday-progress{height:8px;border-radius:99px;background:var(--mint);overflow:hidden;margin:12px 0 4px}
+.holiday-progress>div{height:100%;background:var(--green);border-radius:99px;transition:width .2s ease}
+@media(max-width:700px){.daily-focus-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.daily-focus{grid-column:auto}}
+
 </style>
 </head>
 <body>
@@ -160,7 +176,7 @@ footer{max-width:1120px}
 <section class="panel hidden" id="app">
 <div id="page-today">
 <h2>Dein Alltag</h2><p class="muted">Alles Wichtige auf einen Blick.</p>
-<div class="home-grid">
+<div class="card home-card home-card-wide daily-focus"><span class="section-kicker">✨ Dein Tagesüberblick</span><div class="daily-focus-grid"><div><strong>Heute im Kalender</strong><div id="dashNextEvent" class="muted">Wird geladen …</div></div><div><strong>Essensplan</strong><div id="dashMeal" class="muted">Noch keine Mahlzeit eingetragen</div><button class="text-action" type="button" onclick="showPage('mealplan')">Zum Essensplan ↗</button></div><div><strong>Einkauf offen</strong><div id="dashShopping" class="muted">–</div><button class="text-action" type="button" onclick="showPage('shopping')">Einkauf öffnen ↗</button></div><div><strong>Nächste Ferien</strong><div id="dashHoliday" class="muted">Countdown ansehen</div><button class="text-action" type="button" onclick="showPage('holidays')">Ferien öffnen ↗</button></div></div></div><div class="home-grid">
  <div class="card home-card"><span class="section-kicker">Wetter in Lohnde</span><div class="home-big" id="homeWeatherValue">🌤️</div><div class="muted" id="homeWeatherText">Aktuelle Vorhersage ansehen</div><button class="action secondary" type="button" onclick="showPage('weather')">Wetter öffnen ↗</button></div>
  <div class="card home-card"><span class="section-kicker">Aufgaben offen</span><div class="home-big" id="todayOpen">–</div><div class="muted">Private und berufliche Aufgaben</div><button class="action secondary" type="button" onclick="showPage('tasks')">Aufgaben öffnen ↗</button></div>
  <div class="card home-card"><span class="section-kicker">Termine heute</span><div class="home-big" id="todayEvents">–</div><div class="muted" id="homeNextEvent">Dein Kalender für diese Woche</div><button class="action secondary" type="button" onclick="showPage('events')">Kalender öffnen ↗</button></div>
@@ -290,6 +306,24 @@ function renderTasks(){const root=$('taskList');root.innerHTML='';if(!tasks.leng
 async function updateTask(id,changes){const {error}=await sb.from('tasks').update(changes).eq('id',id);if(error){status('syncStatus',error.message,true);return}await loadTasks()}
 async function deleteTask(id){if(!confirm('Diese Aufgabe löschen?'))return;const {error}=await sb.from('tasks').delete().eq('id',id);if(error){status('syncStatus',error.message,true);return}await loadTasks()}
 $('taskForm').addEventListener('submit',async e=>{e.preventDefault();const title=$('taskTitle').value.trim();if(!title||!currentUser)return;const row={title,category:$('taskCategory').value,due_date:$('taskDue').value||null,is_done:false,user_id:currentUser.id};const {error}=await sb.from('tasks').insert(row);if(error){status('syncStatus','Speichern fehlgeschlagen: '+error.message,true);return}$('taskTitle').value='';$('taskDue').value='';await loadTasks()});
+function updateSmartDashboard(){
+ const today=localDateString(new Date());
+ const eventEl=$('dashNextEvent');
+ if(eventEl){
+  const next=[...events].filter(e=>e.event_date>=today).sort((a,b)=>(a.event_date+(a.event_time||'')).localeCompare(b.event_date+(b.event_time||'')))[0];
+  eventEl.textContent=next?(next.event_date===today?'Heute':' '+new Date(next.event_date+'T12:00:00').toLocaleDateString('de-DE',{weekday:'short',day:'2-digit',month:'short'}))+(next.event_time?' · '+String(next.event_time).slice(0,5):'')+' – '+next.title:'Keine Termine geplant';
+ }
+ const shopEl=$('dashShopping');if(shopEl){const n=shoppingItems.filter(x=>!x.is_done).length;shopEl.textContent=n===0?'Alles erledigt ✓':n+' Artikel auf der Liste'}
+ const mealEl=$('dashMeal');if(mealEl){
+  const todayMeals=meals.filter(m=>m.meal_date===today).sort((a,b)=>(a.meal_type||'').localeCompare(b.meal_type||''));
+  mealEl.textContent=todayMeals.length?todayMeals.map(m=>(m.meal_type?m.meal_type+': ':'')+m.meal_name).join(' · '):'Noch keine Mahlzeit eingetragen';
+ }
+ const holidayEl=$('dashHoliday');if(holidayEl){
+  const d=new Date();d.setHours(12,0,0,0);
+  const next=niedersachsenHolidays.filter(h=>holidayDate(h.end)>=d).sort((a,b)=>holidayDate(a.start)-holidayDate(b.start))[0];
+  if(next){const st=holidayState(next,new Date(d));holidayEl.textContent=next.name+' · '+st.text}else holidayEl.textContent='Keine Termine hinterlegt';
+ }
+}
 function updateCounts(){
  $('todayOpen').textContent=tasks.filter(t=>!t.is_done).length;
  const today=localDateString(new Date());
@@ -310,6 +344,7 @@ function updateCounts(){
  }
  const nextLabel=$('homeNextEvent');
  if(nextLabel)nextLabel.textContent=next.length?'Als Nächstes: '+next[0].title:'Keine kommenden Termine';
+ updateSmartDashboard();
 }
 $('authForm').addEventListener('submit',async e=>{e.preventDefault();if(!configured){status('authStatus','Bitte trage zuerst Project URL und Publishable Key im Code ein.',true);return}const {error}=await sb.auth.signInWithPassword({email:$('email').value.trim(),password:$('password').value});if(error){status('authStatus',error.message,true);return}status('authStatus','Anmeldung erfolgreich.');});
 $('signupBtn').addEventListener('click',async()=>{if(!configured){status('authStatus','Bitte trage zuerst Project URL und Publishable Key im Code ein.',true);return}const email=$('email').value.trim(),password=$('password').value;if(!email||password.length<6){status('authStatus','Bitte E-Mail und ein Passwort mit mindestens 6 Zeichen eingeben.',true);return}const {data,error}=await sb.auth.signUp({email,password,options:{emailRedirectTo:location.origin+location.pathname}});if(error){status('authStatus',error.message,true);return}status('authStatus',data.session?'Konto erstellt und angemeldet.':'Konto erstellt. Bitte prüfe deine E-Mails und bestätige die Adresse.');});
@@ -349,8 +384,10 @@ function renderWeek(){
   const col=document.createElement('div');col.className='day-column'+(key===localDateString(now)?' today':'');
   const heading=document.createElement('div');heading.className='day-heading';heading.textContent=date.toLocaleDateString('de-DE',{weekday:'short'});const number=document.createElement('span');number.className='day-number';number.textContent=date.getDate();heading.append(number);col.append(heading);
   const todays=events.filter(e=>e.event_date===key).sort((a,b)=>(a.event_time||'').localeCompare(b.event_time||''));
-  if(!todays.length){const empty=document.createElement('div');empty.className='week-empty';empty.textContent='—';col.append(empty)}
-  todays.forEach(e=>{const item=document.createElement('div');item.className='day-event';if(e.event_time){const time=document.createElement('time');time.textContent=String(e.event_time).slice(0,5);item.append(time)}item.append(document.createTextNode(e.title));col.append(item)});
+  const taskDay=tasks.filter(t=>!t.is_done&&(t.due_date===key||t.task_date===key||t.event_date===key));
+  if(!todays.length&&!taskDay.length){const empty=document.createElement('div');empty.className='week-empty';empty.textContent='Noch nichts geplant';col.append(empty)}
+  todays.forEach(e=>{const item=document.createElement('div');item.className='day-event';if(e.event_time){const time=document.createElement('time');time.textContent=String(e.event_time).slice(0,5)}const label=document.createElement('span');label.textContent=e.title;if(e.event_time)item.append(time);item.append(label);col.append(item)});
+  taskDay.forEach(t=>{const item=document.createElement('div');item.className='day-event day-task';item.textContent='✓ '+t.title;col.append(item)});
   const add=document.createElement('button');add.type='button';add.className='action secondary';add.style.cssText='font-size:.72rem;padding:5px 7px;margin-top:7px;width:100%';add.textContent='+ Termin';add.onclick=()=>{$('eventDate').value=key;$('eventTitle').focus();$('eventForm').scrollIntoView({behavior:'smooth',block:'center'})};col.append(add);
   grid.append(col);
  }
@@ -462,7 +499,7 @@ function renderMeals(){
  $('mealWeekLabel').textContent=monday.toLocaleDateString('de-DE',{day:'2-digit',month:'short'})+' – '+sunday.toLocaleDateString('de-DE',{day:'2-digit',month:'short',year:'numeric'});
  const from=localDateString(monday),to=localDateString(sunday);
  const week=meals.filter(m=>m.meal_date>=from&&m.meal_date<=to).sort((a,b)=>(a.meal_date+a.meal_type).localeCompare(b.meal_date+b.meal_type));
- if(!week.length){root.innerHTML='<div class="empty">Für diese Woche sind noch keine Mahlzeiten geplant.</div>';return}
+ if(!week.length){root.innerHTML='<div class="empty">Für diese Woche sind noch keine Mahlzeiten geplant.</div>';updateSmartDashboard();return}
  week.forEach(m=>{
   const card=document.createElement('article');card.className='card';
   const date=document.createElement('div');date.className='section-kicker';date.textContent=dateFromLocalString(m.meal_date).toLocaleDateString('de-DE',{weekday:'long',day:'2-digit',month:'2-digit'})+' · '+m.meal_type;
@@ -472,6 +509,7 @@ function renderMeals(){
   if(m.ingredients){const add=document.createElement('button');add.className='action secondary';add.type='button';add.textContent='Zutaten zur Einkaufsliste';add.onclick=()=>addMealIngredients(m.ingredients);card.append(add)}
   const del=document.createElement('button');del.className='delete';del.style.marginTop='8px';del.textContent='Mahlzeit löschen';del.onclick=()=>deleteMeal(m.id);card.append(del);root.append(card);
  });
+ updateSmartDashboard();
 }
 async function addMealIngredients(text){
  if(!currentUser||!sb){alert('Bitte zuerst anmelden, um Zutaten in die synchronisierte Einkaufsliste zu übernehmen.');return}
@@ -575,6 +613,12 @@ function renderHolidayCountdowns(){
   const dates=document.createElement('p');dates.className='muted';dates.textContent=holidayFmt(next.start)+(next.start!==next.end?' – '+holidayFmt(next.end):'');
   const count=document.createElement('div');count.className='home-big';count.textContent=st.kind==='during'?'🏖️ '+st.text:'⏳ '+st.text;
   hero.append(title,dates,count);
+  if(st.kind==='during'){
+   const total=Math.max(1,holidayDayDiff(next.start,next.end)+1);
+   const elapsed=Math.max(0,holidayDayDiff(next.start,localDateString(today)));
+   const track=document.createElement('div');track.className='holiday-progress';const fill=document.createElement('div');fill.style.width=Math.min(100,Math.round(elapsed/total*100))+'%';track.append(fill);hero.append(track);
+   const sub=document.createElement('p');sub.className='muted';sub.textContent='Genieße deine Ferien!';hero.append(sub);
+  }
  }else hero.textContent='Für die kommenden Jahre sind noch keine weiteren Termine hinterlegt.';
  list.innerHTML='';
  const entries=niedersachsenHolidays.filter(h=>holidayDate(h.start).getFullYear()===year||holidayDate(h.end).getFullYear()===year);
@@ -614,4 +658,3 @@ $('weatherForm').addEventListener('submit',e=>{e.preventDefault();loadWeather()}
 if('serviceWorker' in navigator && location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js').catch(()=>{});
 </script>
 </body></html>
-
