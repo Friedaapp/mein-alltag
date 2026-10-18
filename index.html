@@ -39,6 +39,56 @@ form{display:grid;gap:10px;margin:18px 0}.item{display:flex;align-items:center;g
 .week-agenda{margin-top:8px}
 @media(max-width:700px){.week-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.day-column{min-height:90px}.week-controls .action{flex:1}.week-controls strong{width:100%;text-align:center}}
 
+
+/* Mein Alltag – ruhiges Salbeigrün / Creme, responsive Navigation */
+:root{--bg:#f7f5ed;--card:#fffefa;--ink:#25372f;--muted:#69776d;--green:#536f5c;--mint:#e3ecdf;--line:#e4e5d9;--orange:#e9bd7c;--red:#b94b43}
+body{background:var(--bg);color:var(--ink)}
+header{background:linear-gradient(125deg,#536f5c,#3e5948);padding:24px max(18px,calc((100% - 1120px)/2));box-shadow:0 4px 18px #25372f12}
+header h1{font-size:1.8rem;letter-spacing:-.03em}
+header p{color:#edf3e9}
+main{max-width:1120px;grid-template-columns:232px minmax(0,1fr);gap:20px;padding:22px}
+nav,.panel,.card{border-color:#e4e5d9;box-shadow:0 5px 20px #334d3d0a;border-radius:20px}
+nav{padding:12px;gap:6px;position:sticky;top:18px}
+nav button{padding:12px 13px;border-radius:13px;transition:background .15s ease}
+nav button.active,nav button:hover{background:var(--mint);color:#304b38}
+.panel{padding:24px;background:var(--card)}
+.panel h2{font-size:1.5rem;letter-spacing:-.025em}
+input,select,button.action{border-radius:12px;border-color:#d8dfd3;padding:12px}
+button.action{background:var(--green);box-shadow:0 2px 4px #334d3d0d}
+button.action:hover{background:#405b48}
+button.secondary{background:#e8eee3;color:#3e5948;box-shadow:none}
+.card{padding:18px;background:#fffefa}
+.card h3{color:#334b3a}
+.pill{background:#e8eee3;color:#3e5948}
+.day-column{background:#fffefa;border-color:#e4e5d9}
+.day-column.today{border-color:#6c8b70;box-shadow:inset 0 0 0 1px #6c8b70;background:#f2f6ee}
+.day-event{background:#e8eee3;color:#304b38}
+footer{max-width:1120px}
+.home-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:18px}
+.home-card{min-height:150px;display:flex;flex-direction:column;gap:9px}
+.home-card .home-big{font-size:1.8rem;font-weight:750;letter-spacing:-.04em}
+.home-card .action{align-self:flex-start;margin-top:auto;text-decoration:none}
+.home-card-wide{grid-column:1/-1}
+.home-match-links{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.home-match-links a{font-size:.9rem}
+.home-agenda-item{padding:9px 0;border-bottom:1px solid var(--line)}
+.home-agenda-item:last-child{border-bottom:0}
+.home-date{font-size:.8rem;color:var(--muted)}
+.section-kicker{font-size:.75rem;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);font-weight:700}
+@media(max-width:700px){
+ body{padding-bottom:118px}
+ header{padding:18px 16px 20px}
+ header h1{font-size:1.55rem}
+ main{display:block;padding:12px}
+ nav{position:fixed;z-index:20;left:10px;right:10px;bottom:9px;top:auto;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:3px;padding:7px;background:#fffefaee;backdrop-filter:blur(14px);box-shadow:0 8px 30px #26382d24;border-radius:18px}
+ nav button{font-size:.76rem;text-align:center;padding:9px 2px;line-height:1.25;overflow-wrap:anywhere}
+ .panel{padding:16px;border-radius:18px}
+ .home-grid{grid-template-columns:1fr}
+ .home-card-wide{grid-column:auto}
+ .home-card{min-height:130px}
+ .week-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+
 </style>
 </head>
 <body>
@@ -49,7 +99,9 @@ form{display:grid;gap:10px;margin:18px 0}.item{display:flex;align-items:center;g
 <button data-page="tasks">✓ Aufgaben</button>
 <button data-page="events">📅 Termine</button>
 <button data-page="shopping">🛒 Einkauf</button>
-<button data-page="sports">⚽ Sport</button>
+<button data-page="notes">📝 Notizen</button>
+<button data-page="football">⚽ Fußball</button>
+<button data-page="volleyball">🏐 Volleyball</button>
 <button data-page="weather">🌦️ Wetter</button>
 </nav>
 <section class="panel" id="auth">
@@ -64,9 +116,22 @@ form{display:grid;gap:10px;margin:18px 0}.item{display:flex;align-items:center;g
 </section>
 <section class="panel hidden" id="app">
 <div id="page-today">
-<h2>Dein Überblick</h2><p class="muted">Schön, dass du da bist. Hier findest du deinen aktuellen Alltag.</p>
-<div class="grid"><div class="card"><h3>Aufgaben offen</h3><div id="todayOpen" style="font-size:2rem;font-weight:700">–</div><span class="muted">Auf allen Geräten synchronisiert</span></div><div class="card"><h3>Termine</h3><div id="todayEvents" style="font-size:2rem;font-weight:700">–</div><span class="muted">Auf diesem Gerät gespeichert</span></div><div class="card"><h3>Einkauf</h3><div id="todayShopping" style="font-size:2rem;font-weight:700">–</div><span class="muted">Auf diesem Gerät gespeichert</span></div></div>
-<div class="row" style="margin-top:18px"><button class="action" onclick="showPage('tasks')">Aufgabe hinzufügen</button><button class="action secondary" onclick="showPage('shopping')">Einkauf öffnen</button></div>
+<h2>Dein Alltag</h2><p class="muted">Alles Wichtige auf einen Blick.</p>
+<div class="home-grid">
+ <div class="card home-card"><span class="section-kicker">Wetter in Lohnde</span><div class="home-big" id="homeWeatherValue">🌤️</div><div class="muted" id="homeWeatherText">Aktuelle Vorhersage ansehen</div><button class="action secondary" type="button" onclick="showPage('weather')">Wetter öffnen ↗</button></div>
+ <div class="card home-card"><span class="section-kicker">Aufgaben offen</span><div class="home-big" id="todayOpen">–</div><div class="muted">Private und berufliche Aufgaben</div><button class="action secondary" type="button" onclick="showPage('tasks')">Aufgaben öffnen ↗</button></div>
+ <div class="card home-card"><span class="section-kicker">Termine heute</span><div class="home-big" id="todayEvents">–</div><div class="muted" id="homeNextEvent">Dein Kalender für diese Woche</div><button class="action secondary" type="button" onclick="showPage('events')">Kalender öffnen ↗</button></div>
+ <div class="card home-card"><span class="section-kicker">Einkaufsliste</span><div class="home-big" id="todayShopping">–</div><div class="muted">Noch offene Artikel</div><button class="action secondary" type="button" onclick="showPage('shopping')">Einkauf öffnen ↗</button></div>
+ <div class="card home-card home-card-wide"><span class="section-kicker">Nächster Spieltag</span><h3>Deine Teams</h3><p class="muted">Öffne den Spielplan deiner Mannschaft direkt bei der Originalquelle.</p><div class="home-match-links">
+ <a class="action secondary" href="https://www.kicker.de/borussia-dortmund/info/bundesliga/2026-27" target="_blank" rel="noopener">⚽ BVB ↗</a>
+ <a class="action secondary" href="https://www.kicker.de/hannover-96/info/2-bundesliga/2026-27" target="_blank" rel="noopener">⚽ Hannover 96 ↗</a>
+ <a class="action secondary" href="https://www.kicker.de/tsv-havelse/info/regionalliga-nord/2026-27" target="_blank" rel="noopener">⚽ TSV Havelse ↗</a>
+ <a class="action secondary" href="https://www.nwvv-hannover.de/cms/home/freizeitsport/mixedc/mixedc1.xhtml" target="_blank" rel="noopener">🏐 Mixed ↗</a>
+ <a class="action secondary" href="https://www.nwvv-hannover.de/cms/home/freizeitsport/maenner/maennerd.xhtml" target="_blank" rel="noopener">🏐 Männer ↗</a>
+ <a class="action secondary" href="https://www.nwvv-hannover.de/cms/home/freizeitsport/frauen/frauen_a.xhtml" target="_blank" rel="noopener">🏐 Frauen ↗</a>
+ </div></div>
+ <div class="card home-card home-card-wide"><span class="section-kicker">Als Nächstes</span><h3>Deine Termine</h3><div id="homeAgenda"><p class="muted">Deine kommenden Termine erscheinen hier.</p></div></div>
+</div>
 </div>
 <div id="page-tasks" class="hidden"><h2>Aufgaben</h2><p class="muted">Diese Liste wird mit Supabase zwischen deinen Geräten synchronisiert.</p>
 <form id="taskForm"><input id="taskTitle" placeholder="Was möchtest du erledigen?" maxlength="180" required><div class="row"><select id="taskCategory"><option>Privat</option><option>Beruflich</option></select><input id="taskDue" type="date"></div><button class="action" type="submit">＋ Aufgabe speichern</button></form><div id="taskList"></div></div>
@@ -77,12 +142,15 @@ form{display:grid;gap:10px;margin:18px 0}.item{display:flex;align-items:center;g
 <form id="eventForm"><input id="eventTitle" placeholder="Termin" maxlength="180" required><div class="row"><input id="eventDate" type="date" required><input id="eventTime" type="time"></div><button class="action">＋ Termin speichern</button></form>
 <h3 style="margin:20px 0 4px">Alle kommenden Termine</h3><div id="eventList" class="week-agenda"></div></div>
 <div id="page-shopping" class="hidden"><h2>Einkaufsliste</h2><p class="muted">Die Einkaufsliste wird mit deinem Konto auf deinen Geräten synchronisiert.</p><form id="shoppingForm"><input id="shoppingTitle" placeholder="Artikel hinzufügen" maxlength="180" required><button class="action">＋ Hinzufügen</button></form><div id="shoppingList"></div></div>
-<div id="page-sports" class="hidden"><h2>Mein Sport</h2><p class="muted">Offizielle Seiten deiner Teams</p><div class="grid">
-<a class="card" href="https://www.bvb.de/" target="_blank" rel="noopener"><h3>🟡 Borussia Dortmund</h3>Offizielle Website ↗</a>
-<a class="card" href="https://www.hannover96.de/" target="_blank" rel="noopener"><h3>🟢 Hannover 96</h3>Offizielle Website ↗</a>
-<a class="card" href="https://www.tsv-havelse.de/" target="_blank" rel="noopener"><h3>⚽ TSV Havelse</h3>Offizielle Website ↗</a>
-<a class="card" href="https://www.volleyball.de/" target="_blank" rel="noopener"><h3>🏐 TV Lohnde Frösche</h3>Volleyball-Infos ↗</a>
-</div><p class="muted">Live-Spielstände und persönliche Favoriten richten wir später ein.</p></div>
+<div id="page-notes" class="hidden"><h2>📝 Notizen</h2><p class="muted">Persönliche Notizen, die mit deinem Konto auf PC und Handy synchronisiert werden.</p>
+<form id="noteForm"><input id="noteTitle" placeholder="Titel der Notiz" maxlength="180" required><textarea id="noteContent" placeholder="Was möchtest du festhalten?" rows="5" maxlength="10000" style="width:100%;resize:vertical;border:1px solid #d8dfd3;border-radius:12px;padding:12px;font:inherit;background:#fffefa;color:var(--ink)"></textarea><button class="action" type="submit">＋ Notiz speichern</button></form><div id="notesList"></div></div>
+<div id="page-football" class="hidden"><h2>⚽ Fußball</h2><p class="muted">Wähle deinen Verein und öffne Spielplan, Ergebnisse oder Tabelle. Öffne die aktuellen Vereins- und Ligaseiten von kicker.de.</p>
+<label for="footballTeam" class="muted">Verein auswählen</label><select id="footballTeam" style="width:100%;margin:6px 0 14px"><option value="bvb">Borussia Dortmund</option><option value="h96">Hannover 96</option><option value="havelse">TSV Havelse</option></select>
+<div class="row sport-tabs" id="footballTabs"><button class="action" data-sporttab="schedule">📅 Spielplan</button><button class="action secondary" data-sporttab="results">🏁 Ergebnisse</button><button class="action secondary" data-sporttab="table">📊 Tabelle</button></div><div id="footballContent" class="grid"></div><p class="muted">Hinweis: Die App speichert keine externen Sportdaten und benötigt keine API-Schlüssel. Die aktuellen Daten öffnest du direkt bei kicker.de bzw. NWVV/SAMS; dafür ist eine Internetverbindung nötig.</p></div>
+<div id="page-volleyball" class="hidden"><h2>🏐 Volleyball</h2><p class="muted">TV Lohnde Frösche · wähle deine Mannschaft und danach Spielplan, Ergebnisse oder Tabelle.</p>
+<label for="volleyballTeam" class="muted">Mannschaft auswählen</label><select id="volleyballTeam" style="width:100%;margin:6px 0 14px"><option value="mixed">Mixed</option><option value="men">Männer</option><option value="women">Frauen</option></select>
+<div class="row sport-tabs" id="volleyballTabs"><button class="action" data-sporttab="schedule">📅 Spielplan</button><button class="action secondary" data-sporttab="results">🏁 Ergebnisse</button><button class="action secondary" data-sporttab="table">📊 Tabelle</button></div><div id="volleyballContent" class="grid"></div>
+<p class="muted">Die aktuellen Daten liegen beim NWVV in SAMS. Öffne den Ergebnisdienst und wähle dort die passende Liga bzw. „TV Lohnde“ und deine Mannschaft aus. SAMS ist die offizielle Quelle für Spielpläne, Ergebnisse und Tabellen.</p></div>
 <div id="page-weather" class="hidden"><h2>Wetter</h2><p class="muted">Aktuelles Wetter und Vorhersage über Open-Meteo.</p><form id="weatherForm"><input id="weatherCity" value="Lohnde" placeholder="Ort"><button class="action">Wetter laden</button></form><div id="weatherResult" class="grid"></div><p id="weatherStatus" class="status"></p></div>
 <div style="border-top:1px solid var(--line);margin-top:22px;padding-top:14px"><button id="logoutBtn" class="action secondary">Abmelden</button><span id="syncStatus" class="muted" style="margin-left:10px"></span></div>
 </section>
@@ -95,22 +163,42 @@ form{display:grid;gap:10px;margin:18px 0}.item{display:flex;align-items:center;g
 const SUPABASE_URL = "https://xqjyfnqmwmvcmilzlylb.supabase.co";
 const SUPABASE_PUBLIC_KEY = "sb_publishable_7mLWINKm8XZOR-1ACEPVpA_gs_EZrpe";
 const configured = SUPABASE_URL.startsWith("https://") && !SUPABASE_URL.includes("HIER_") && !SUPABASE_PUBLIC_KEY.includes("HIER_");
-let sb = null, currentUser = null, tasks = [], events = [], shoppingItems = [];
+let sb = null, currentUser = null, tasks = [], events = [], shoppingItems = [], notes = [];
 const $ = id => document.getElementById(id);
 const localRead = key => { try{return JSON.parse(localStorage.getItem(key)||"[]")}catch{return []} };
 const localWrite = (key,val) => localStorage.setItem(key,JSON.stringify(val));
 function status(id,msg,error=false){$(id).textContent=msg;$(id).className="status "+(error?"error":"ok")}
-function showPage(page){document.querySelectorAll('[id^="page-"]').forEach(el=>el.classList.add('hidden'));$('page-'+page).classList.remove('hidden');document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===page));if(page==='events'){renderEvents();if(!$('eventDate').value)$('eventDate').value=localDateString(new Date())};if(page==='shopping')renderShopping();if(page==='weather')loadWeather()}
+function showPage(page){document.querySelectorAll('[id^="page-"]').forEach(el=>el.classList.add('hidden'));$('page-'+page).classList.remove('hidden');document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===page));if(page==='events'){renderEvents();if(!$('eventDate').value)$('eventDate').value=localDateString(new Date())};if(page==='shopping')renderShopping();if(page==='notes')renderNotes();if(page==='weather')loadWeather();if(page==='football')renderFootball();if(page==='volleyball')renderVolleyball()}
 document.querySelectorAll('#nav button').forEach(b=>b.addEventListener('click',()=>showPage(b.dataset.page)));
 async function loadTasks(){if(!sb||!currentUser)return;status('syncStatus','Synchronisiere …');const {data,error}=await sb.from('tasks').select('*').order('created_at',{ascending:false});if(error){status('syncStatus','Synchronisierung fehlgeschlagen: '+error.message,true);return}tasks=data||[];renderTasks();updateCounts();status('syncStatus','Synchronisiert ✓')}
 function renderTasks(){const root=$('taskList');root.innerHTML='';if(!tasks.length){root.innerHTML='<div class="empty">Noch keine Aufgaben. Füge oben deine erste Aufgabe hinzu.</div>';return}for(const t of tasks){const row=document.createElement('div');row.className='item';const check=document.createElement('input');check.type='checkbox';check.checked=t.is_done;check.setAttribute('aria-label','Erledigt');check.addEventListener('change',()=>updateTask(t.id,{is_done:check.checked}));const text=document.createElement('div');text.className='grow';const title=document.createElement('span');title.textContent=t.title;title.className=t.is_done?'done':'';text.append(title);const meta=document.createElement('small');meta.textContent=t.category+(t.due_date?' · '+t.due_date:'');text.append(meta);const del=document.createElement('button');del.className='delete';del.textContent='Löschen';del.addEventListener('click',()=>deleteTask(t.id));row.append(check,text,del);root.append(row)}}
 async function updateTask(id,changes){const {error}=await sb.from('tasks').update(changes).eq('id',id);if(error){status('syncStatus',error.message,true);return}await loadTasks()}
 async function deleteTask(id){if(!confirm('Diese Aufgabe löschen?'))return;const {error}=await sb.from('tasks').delete().eq('id',id);if(error){status('syncStatus',error.message,true);return}await loadTasks()}
 $('taskForm').addEventListener('submit',async e=>{e.preventDefault();const title=$('taskTitle').value.trim();if(!title||!currentUser)return;const row={title,category:$('taskCategory').value,due_date:$('taskDue').value||null,is_done:false,user_id:currentUser.id};const {error}=await sb.from('tasks').insert(row);if(error){status('syncStatus','Speichern fehlgeschlagen: '+error.message,true);return}$('taskTitle').value='';$('taskDue').value='';await loadTasks()});
-function updateCounts(){$('todayOpen').textContent=tasks.filter(t=>!t.is_done).length;$('todayEvents').textContent=events.length;$('todayShopping').textContent=shoppingItems.filter(x=>!x.is_done).length}
+function updateCounts(){
+ $('todayOpen').textContent=tasks.filter(t=>!t.is_done).length;
+ const today=localDateString(new Date());
+ const todays=events.filter(e=>e.event_date===today);
+ $('todayEvents').textContent=todays.length;
+ $('todayShopping').textContent=shoppingItems.filter(x=>!x.is_done).length;
+ const next=[...events].filter(e=>e.event_date>=today).sort((a,b)=>(a.event_date+(a.event_time||'')).localeCompare(b.event_date+(b.event_time||''))).slice(0,3);
+ const agenda=$('homeAgenda');
+ if(agenda){
+  agenda.innerHTML='';
+  if(!next.length){agenda.innerHTML='<p class="muted">Keine kommenden Termine eingetragen.</p>';}
+  else next.forEach(e=>{
+   const row=document.createElement('div');row.className='home-agenda-item';
+   const date=document.createElement('div');date.className='home-date';date.textContent=new Date(e.event_date+'T12:00:00').toLocaleDateString('de-DE',{weekday:'short',day:'2-digit',month:'short'})+(e.event_time?' · '+e.event_time:'');
+   const title=document.createElement('strong');title.textContent=e.title;
+   row.append(date,title);agenda.append(row);
+  });
+ }
+ const nextLabel=$('homeNextEvent');
+ if(nextLabel)nextLabel.textContent=next.length?'Als Nächstes: '+next[0].title:'Keine kommenden Termine';
+}
 $('authForm').addEventListener('submit',async e=>{e.preventDefault();if(!configured){status('authStatus','Bitte trage zuerst Project URL und Publishable Key im Code ein.',true);return}const {error}=await sb.auth.signInWithPassword({email:$('email').value.trim(),password:$('password').value});if(error){status('authStatus',error.message,true);return}status('authStatus','Anmeldung erfolgreich.');});
 $('signupBtn').addEventListener('click',async()=>{if(!configured){status('authStatus','Bitte trage zuerst Project URL und Publishable Key im Code ein.',true);return}const email=$('email').value.trim(),password=$('password').value;if(!email||password.length<6){status('authStatus','Bitte E-Mail und ein Passwort mit mindestens 6 Zeichen eingeben.',true);return}const {data,error}=await sb.auth.signUp({email,password,options:{emailRedirectTo:location.origin+location.pathname}});if(error){status('authStatus',error.message,true);return}status('authStatus',data.session?'Konto erstellt und angemeldet.':'Konto erstellt. Bitte prüfe deine E-Mails und bestätige die Adresse.');});
-async function setSession(session){currentUser=session?.user||null;$('auth').classList.toggle('hidden',!!currentUser);$('app').classList.toggle('hidden',!currentUser);$('nav').classList.toggle('hidden',!currentUser);if(currentUser){await Promise.all([loadTasks(),loadEvents(),loadShopping()]);updateCounts()}else{tasks=[];events=[];shoppingItems=[];updateCounts()}}
+async function setSession(session){currentUser=session?.user||null;$('auth').classList.toggle('hidden',!!currentUser);$('app').classList.toggle('hidden',!currentUser);$('nav').classList.toggle('hidden',!currentUser);if(currentUser){await Promise.all([loadTasks(),loadEvents(),loadShopping(),loadNotes()]);updateCounts()}else{tasks=[];events=[];shoppingItems=[];notes=[];updateCounts()}}
 $('logoutBtn').addEventListener('click',async()=>{if(sb)await sb.auth.signOut();});
 if(configured){sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLIC_KEY);sb.auth.onAuthStateChange((_event,session)=>{setTimeout(()=>setSession(session),0)});sb.auth.getSession().then(({data})=>setSession(data.session));}
 
@@ -203,8 +291,59 @@ $('shoppingForm').addEventListener('submit',async e=>{
   if(error){status('syncStatus','Artikel konnte nicht gespeichert werden: '+error.message,true);return}
   $('shoppingTitle').value='';await loadShopping();status('syncStatus','Synchronisiert ✓');
 });
+
+async function loadNotes(){
+ if(!sb||!currentUser)return;
+ const {data,error}=await sb.from('notes').select('*').order('created_at',{ascending:false});
+ if(error){status('syncStatus','Notizen konnten nicht geladen werden: '+error.message,true);return}
+ notes=data||[];renderNotes();
+}
+function renderNotes(){
+ const root=$('notesList');if(!root)return;root.innerHTML='';
+ if(!notes.length){root.innerHTML='<div class="empty">Noch keine Notizen. Schreibe oben deine erste Notiz.</div>';return}
+ notes.forEach(note=>{
+  const card=document.createElement('article');card.className='card';card.style.margin='12px 0';
+  const title=document.createElement('h3');title.textContent=note.title;
+  const content=document.createElement('p');content.style.whiteSpace='pre-wrap';content.style.overflowWrap='anywhere';content.textContent=note.content||'';
+  const meta=document.createElement('small');meta.className='muted';meta.textContent=note.created_at?new Date(note.created_at).toLocaleString('de-DE',{dateStyle:'medium',timeStyle:'short'}):'';
+  const del=document.createElement('button');del.className='delete';del.textContent='Notiz löschen';del.onclick=()=>deleteNote(note.id);
+  card.append(title,content,meta,document.createElement('br'),del);root.append(card);
+ });
+}
+$('noteForm').addEventListener('submit',async e=>{
+ e.preventDefault();
+ if(!sb||!currentUser){status('syncStatus','Bitte zuerst anmelden.',true);return}
+ const title=$('noteTitle').value.trim(),content=$('noteContent').value.trim();
+ if(!title){$('noteTitle').focus();return}
+ const {error}=await sb.from('notes').insert({user_id:currentUser.id,title,content});
+ if(error){status('syncStatus','Notiz konnte nicht gespeichert werden: '+error.message,true);return}
+ $('noteTitle').value='';$('noteContent').value='';
+ await loadNotes();status('syncStatus','Notiz synchronisiert ✓');
+});
+async function deleteNote(id){
+ if(!confirm('Diese Notiz wirklich löschen?'))return;
+ const {error}=await sb.from('notes').delete().eq('id',id);
+ if(error){status('syncStatus','Notiz konnte nicht gelöscht werden: '+error.message,true);return}
+ await loadNotes();status('syncStatus','Notiz gelöscht ✓');
+}
 const codes={0:'Klar',1:'Überwiegend klar',2:'Teilweise bewölkt',3:'Bedeckt',45:'Neblig',48:'Nebel',51:'Leichter Nieselregen',61:'Leichter Regen',63:'Regen',65:'Starker Regen',71:'Leichter Schnee',80:'Regenschauer',95:'Gewitter'};
-async function loadWeather(){const city=$('weatherCity').value.trim()||'Lohnde';$('weatherResult').innerHTML='';$('weatherStatus').textContent='Wetter wird geladen …';try{const g=await fetch('https://geocoding-api.open-meteo.com/v1/search?name='+encodeURIComponent(city)+'&count=1&language=de&format=json').then(r=>r.json());if(!g.results?.length)throw Error('Ort nicht gefunden.');const p=g.results[0];const w=await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${p.latitude}&longitude=${p.longitude}&current=temperature_2m,apparent_temperature,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min&forecast_days=5&timezone=auto`).then(r=>r.json());const cur=w.current;const cards=[{title:'Jetzt · '+p.name,desc:(codes[cur.weather_code]||'Wetter')+' · '+Math.round(cur.temperature_2m)+' °C',sub:'Gefühlt '+Math.round(cur.apparent_temperature)+' °C'},...w.daily.time.map((d,i)=>({title:new Date(d+'T12:00:00').toLocaleDateString('de-DE',{weekday:'short',day:'2-digit',month:'2-digit'}),desc:codes[w.daily.weather_code[i]]||'Wetter',sub:Math.round(w.daily.temperature_2m_min[i])+'° bis '+Math.round(w.daily.temperature_2m_max[i])+'°'}))];cards.forEach(c=>{const el=document.createElement('div');el.className='card';const h=document.createElement('h3');h.textContent=c.title;const d=document.createElement('div');d.textContent=c.desc;const s=document.createElement('small');s.className='muted';s.textContent=c.sub;el.append(h,d,s);$('weatherResult').append(el)});$('weatherStatus').innerHTML='Wetterdaten: <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a>';}catch(e){$('weatherStatus').textContent='Wetter konnte nicht geladen werden: '+e.message}}
+const footballSources={
+ bvb:{name:'Borussia Dortmund',schedule:'https://www.kicker.de/borussia-dortmund/info/bundesliga/2026-27',results:'https://www.kicker.de/borussia-dortmund/info/bundesliga/2026-27',table:'https://www.kicker.de/bundesliga/tabelle'},
+ h96:{name:'Hannover 96',schedule:'https://www.kicker.de/hannover-96/info/2-bundesliga/2026-27',results:'https://www.kicker.de/hannover-96/info/2-bundesliga/2026-27',table:'https://www.kicker.de/2-bundesliga/tabelle'},
+ havelse:{name:'TSV Havelse',schedule:'https://www.kicker.de/tsv-havelse/info/3-liga/2026-27',results:'https://www.kicker.de/tsv-havelse/info/3-liga/2026-27',table:'https://www.kicker.de/3-liga/tabelle'}
+};
+const sportTabLabels={schedule:'Spielplan',results:'Ergebnisse',table:'Tabelle'};
+let activeFootballTab='schedule', activeVolleyballTab='schedule';
+function renderFootball(){const team=footballSources[$('footballTeam').value]||footballSources.bvb;const kind=activeFootballTab;document.querySelectorAll('#footballTabs button').forEach(b=>{const on=b.dataset.sporttab===kind;b.className='action'+(on?'':' secondary')});const labels={schedule:'Spielplan und kommende Begegnungen',results:'Vergangene Spiele und Endergebnisse',table:'Aktuelle Ligatabelle'};const root=$('footballContent');root.innerHTML='';const card=document.createElement('div');card.className='card';const h=document.createElement('h3');h.textContent=team.name+' · '+sportTabLabels[kind];const desc=document.createElement('p');desc.className='muted';desc.textContent=labels[kind]+'. kicker.de ist die gewünschte Quelle; die Originalseite zeigt die aktuellen verfügbaren Informationen.';const a=document.createElement('a');a.className='action';a.style.display='inline-block';a.style.textDecoration='none';a.href=team[kind];a.target='_blank';a.rel='noopener';a.textContent='Aktuelle Daten öffnen ↗';card.append(h,desc,a);root.append(card)}
+const samsLinks={
+ mixed:'https://www.nwvv-hannover.de/cms/home/freizeitsport/mixedc/mixedc1.xhtml',
+ men:'https://www.nwvv-hannover.de/cms/home/freizeitsport/maenner/maennerd.xhtml',
+ women:'https://www.nwvv-hannover.de/cms/home/freizeitsport/frauen/frauen_a.xhtml'
+};
+function renderVolleyball(){const team=$('volleyballTeam');const names={mixed:'Mixed',men:'Männer',women:'Frauen'};const kind=activeVolleyballTab;document.querySelectorAll('#volleyballTabs button').forEach(b=>{const on=b.dataset.sporttab===kind;b.className='action'+(on?'':' secondary')});const labels={schedule:'Spieltermine und kommende Begegnungen',results:'Ergebnisse der absolvierten Spiele',table:'Aktuelle Tabelle der Liga'};const root=$('volleyballContent');root.innerHTML='';const card=document.createElement('div');card.className='card';const h=document.createElement('h3');h.textContent='TV Lohnde Frösche · '+names[team.value]+' · '+sportTabLabels[kind];const desc=document.createElement('p');desc.className='muted';desc.textContent=labels[kind]+'. Die verlinkte NWVV-Seite gehört direkt zu dieser Mannschaft; dort kannst du zwischen Spielplan, Ergebnissen und Tabelle wechseln.';const a=document.createElement('a');a.className='action';a.style.display='inline-block';a.style.textDecoration='none';a.href=samsLinks[team.value];a.target='_blank';a.rel='noopener';a.textContent='Aktuelle NWVV-Daten öffnen ↗';card.append(h,desc,a);root.append(card)}
+document.querySelectorAll('#footballTabs button').forEach(b=>b.addEventListener('click',()=>{activeFootballTab=b.dataset.sporttab;renderFootball()}));$('footballTeam').addEventListener('change',renderFootball);
+document.querySelectorAll('#volleyballTabs button').forEach(b=>b.addEventListener('click',()=>{activeVolleyballTab=b.dataset.sporttab;renderVolleyball()}));$('volleyballTeam').addEventListener('change',renderVolleyball);
+async function loadWeather(){const city=$('weatherCity').value.trim()||'Lohnde';$('weatherResult').innerHTML='';$('weatherStatus').textContent='Wetter wird geladen …';try{const g=await fetch('https://geocoding-api.open-meteo.com/v1/search?name='+encodeURIComponent(city)+'&count=1&language=de&format=json').then(r=>r.json());if(!g.results?.length)throw Error('Ort nicht gefunden.');const p=g.results[0];const w=await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${p.latitude}&longitude=${p.longitude}&current=temperature_2m,apparent_temperature,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min&forecast_days=5&timezone=auto`).then(r=>r.json());const cur=w.current;$('homeWeatherValue').textContent=Math.round(cur.temperature_2m)+' °C';$('homeWeatherText').textContent=(codes[cur.weather_code]||'Wetter')+' · gefühlt '+Math.round(cur.apparent_temperature)+' °C';const cards=[{title:'Jetzt · '+p.name,desc:(codes[cur.weather_code]||'Wetter')+' · '+Math.round(cur.temperature_2m)+' °C',sub:'Gefühlt '+Math.round(cur.apparent_temperature)+' °C'},...w.daily.time.map((d,i)=>({title:new Date(d+'T12:00:00').toLocaleDateString('de-DE',{weekday:'short',day:'2-digit',month:'2-digit'}),desc:codes[w.daily.weather_code[i]]||'Wetter',sub:Math.round(w.daily.temperature_2m_min[i])+'° bis '+Math.round(w.daily.temperature_2m_max[i])+'°'}))];cards.forEach(c=>{const el=document.createElement('div');el.className='card';const h=document.createElement('h3');h.textContent=c.title;const d=document.createElement('div');d.textContent=c.desc;const s=document.createElement('small');s.className='muted';s.textContent=c.sub;el.append(h,d,s);$('weatherResult').append(el)});$('weatherStatus').innerHTML='Wetterdaten: <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a>';}catch(e){$('weatherStatus').textContent='Wetter konnte nicht geladen werden: '+e.message}}
 $('weatherForm').addEventListener('submit',e=>{e.preventDefault();loadWeather()});
 if('serviceWorker' in navigator && location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js').catch(()=>{});
 </script>
