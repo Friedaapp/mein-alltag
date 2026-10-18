@@ -104,6 +104,29 @@ footer{max-width:1120px}
  .week-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 
+
+/* Korrektur: mobile Navigation kompakt halten und nicht über den Seiteninhalt legen */
+@media(max-width:700px){
+  body{padding-bottom:96px!important}
+  #nav:not(.hidden){
+    position:fixed!important;
+    left:10px!important;right:10px!important;bottom:8px!important;top:auto!important;
+    width:auto!important;height:auto!important;max-height:74px!important;
+    display:flex!important;flex-direction:row!important;align-items:center!important;
+    overflow-x:auto!important;overflow-y:hidden!important;
+    gap:4px!important;padding:7px!important;
+    background:rgba(255,253,246,.97)!important;
+    border:1px solid #e4e5d9!important;border-radius:18px!important;
+    z-index:100!important;box-sizing:border-box!important;
+  }
+  #nav:not(.hidden) button{
+    display:block!important;flex:0 0 auto!important;width:auto!important;
+    min-width:max-content!important;white-space:nowrap!important;
+    text-align:center!important;font-size:.78rem!important;
+    padding:10px 11px!important;margin:0!important;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -176,10 +199,10 @@ footer{max-width:1120px}
 <p class="muted">Die aktuellen Daten liegen beim NWVV in SAMS. Öffne den Ergebnisdienst und wähle dort die passende Liga bzw. „TV Lohnde“ und deine Mannschaft aus. SAMS ist die offizielle Quelle für Spielpläne, Ergebnisse und Tabellen.</p></div>
 <div id="page-commute" class="hidden">
   <h2>🚆 Mein Arbeitsweg</h2>
-  <p class="muted">Dein Weg zwischen Lohnde und Schachtstraße 53b in Stadthagen. Die Routen öffnen Google Maps mit den jeweiligen Start- und Zielpunkten.</p>
+  <p class="muted">Dein Weg zwischen Lohnde und Schachtstraße 53b in Stadthagen. Die Bahnverbindungen öffnen die offizielle DB-Reiseauskunft. Die Autofahrten öffnen Google Maps.</p>
   <div class="grid">
-   <article class="card commute-card"><span class="section-kicker">🚆 Bahn · Hinfahrt</span><h3>Dedensen/Gümmer → Stadthagen</h3><p class="muted">Start direkt am Bahnhof Dedensen/Gümmer, Ziel Bahnhof Stadthagen.</p><div class="commute-actions"><a class="action" href="https://www.google.com/maps/dir/?api=1&amp;origin=Bahnhof%20Dedensen-G%C3%BCmmer%2C%2030926%20Seelze%2C%20Deutschland&amp;destination=Bahnhof%20Stadthagen%2C%2031655%20Stadthagen%2C%20Deutschland&amp;travelmode=transit" target="_blank" rel="noopener">Bahn-Hinfahrt öffnen ↗</a><a class="action secondary" href="https://www.bahnhof.de/dedensen-guemmer" target="_blank" rel="noopener">Live-Abfahrten am Startbahnhof ↗</a></div></article>
-   <article class="card commute-card"><span class="section-kicker">🚆 Bahn · Rückfahrt</span><h3>Stadthagen → Dedensen/Gümmer</h3><p class="muted">Rückverbindung direkt zwischen den beiden Bahnhöfen.</p><div class="commute-actions"><a class="action" href="https://www.google.com/maps/dir/?api=1&amp;origin=Bahnhof%20Stadthagen%2C%2031655%20Stadthagen%2C%20Deutschland&amp;destination=Bahnhof%20Dedensen-G%C3%BCmmer%2C%2030926%20Seelze%2C%20Deutschland&amp;travelmode=transit" target="_blank" rel="noopener">Bahn-Rückfahrt öffnen ↗</a><a class="action secondary" href="https://www.bahnhof.de/stadthagen" target="_blank" rel="noopener">Live-Abfahrten am Startbahnhof ↗</a></div></article>
+   <article class="card commute-card"><span class="section-kicker">🚆 Bahn · Hinfahrt</span><h3>Dedensen/Gümmer → Stadthagen</h3><p class="muted">Start direkt am Bahnhof Dedensen/Gümmer, Ziel Bahnhof Stadthagen.</p><div class="commute-actions"><a class="action" href="https://reiseauskunft.bahn.de/bin/query.exe/dn?S=Dedensen-G%C3%BCmmer&Z=Stadthagen&timesel=depart" target="_blank" rel="noopener">DB-Verbindung anzeigen ↗</a><a class="action secondary" href="https://www.bahnhof.de/dedensen-guemmer" target="_blank" rel="noopener">Live-Abfahrten am Startbahnhof ↗</a></div></article>
+   <article class="card commute-card"><span class="section-kicker">🚆 Bahn · Rückfahrt</span><h3>Stadthagen → Dedensen/Gümmer</h3><p class="muted">Rückverbindung direkt zwischen den beiden Bahnhöfen.</p><div class="commute-actions"><a class="action" href="https://reiseauskunft.bahn.de/bin/query.exe/dn?S=Stadthagen&Z=Dedensen-G%C3%BCmmer&timesel=depart" target="_blank" rel="noopener">DB-Verbindung anzeigen ↗</a><a class="action secondary" href="https://www.bahnhof.de/stadthagen" target="_blank" rel="noopener">Live-Abfahrten am Startbahnhof ↗</a></div></article>
    <article class="card commute-card"><span class="section-kicker">🚗 Auto · Hinfahrt</span><h3>Lohnde → Stadthagen</h3><p class="muted">Von Heideweg 7f, Seelze-Lohnde, zur Schachtstraße 53b in Stadthagen.</p><div class="commute-actions"><a class="action" href="https://www.google.com/maps/dir/?api=1&amp;origin=Heideweg%207f%2C%20Seelze-Lohnde%2C%20Deutschland&amp;destination=Schachtstra%C3%9Fe%2053b%2C%20Stadthagen%2C%20Deutschland&amp;travelmode=driving" target="_blank" rel="noopener">Autoroute hin ↗</a></div></article>
    <article class="card commute-card"><span class="section-kicker">🚗 Auto · Rückfahrt</span><h3>Stadthagen → Lohnde</h3><p class="muted">Die Autoroute zurück zu deiner Wohnadresse.</p><div class="commute-actions"><a class="action" href="https://www.google.com/maps/dir/?api=1&amp;origin=Schachtstra%C3%9Fe%2053b%2C%20Stadthagen%2C%20Deutschland&amp;destination=Heideweg%207f%2C%20Seelze-Lohnde%2C%20Deutschland&amp;travelmode=driving" target="_blank" rel="noopener">Autoroute zurück ↗</a></div></article>
   </div>
