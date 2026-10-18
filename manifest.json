@@ -1,0 +1,10 @@
+{
+  "name": "Mein Alltag",
+  "short_name": "Mein Alltag",
+  "description": "Persönlicher Alltagsmanager",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f5f7f4",
+  "theme_color": "#f5f7f4",
+  "icons": []
+}
