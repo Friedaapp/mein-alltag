@@ -262,7 +262,7 @@ button,a.action,select,input{touch-action:manipulation}
 <h3 style="margin:20px 0 4px">🗓️ Alle kommenden Termine</h3><div id="eventList" class="week-agenda"></div></div>
 <div id="page-shopping" class="hidden"><h2>Einkaufsliste</h2><p class="muted">Die Einkaufsliste wird mit deinem Konto auf deinen Geräten synchronisiert.</p><form id="shoppingForm"><input id="shoppingTitle" placeholder="Artikel hinzufügen" maxlength="180" required><button class="action">＋ Hinzufügen</button></form><div id="shoppingList"></div></div>
 <div id="page-notes" class="hidden"><h2>📝 Notizen</h2><p class="muted">Persönliche Notizen, die mit deinem Konto auf PC und Handy synchronisiert werden.</p>
-<form id="noteForm"><input id="noteTitle" placeholder="Titel der Notiz" maxlength="180" required><textarea id="noteContent" placeholder="Was möchtest du festhalten?" rows="5" maxlength="10000" style="width:100%;resize:vertical;border:1px solid #d8dfd3;border-radius:12px;padding:12px;font:inherit;background:#fffefa;color:var(--ink)"></textarea><button class="action" type="submit">＋ Notiz speichern</button></form><div id="notesList"></div></div>
+<form id="noteForm"><label for="noteCategory">Kategorie</label><select id="noteCategory" required><option value="Privat">🏡 Privat</option><option value="Schule">📚 Schule</option><option value="Volleyball">🏐 Volleyball</option><option value="Sonstiges">📌 Sonstiges</option></select><input id="noteTitle" placeholder="Titel der Notiz" maxlength="180" required><textarea id="noteContent" placeholder="Was möchtest du festhalten?" rows="4" maxlength="10000" style="width:100%;resize:vertical;border:1px solid #d8dfd3;border-radius:12px;padding:12px;font:inherit;background:#fffefa;color:var(--ink)"></textarea><button class="action" type="submit">＋ Notiz speichern</button></form><div class="note-category-tabs" role="tablist" aria-label="Notizkategorie" style="display:flex;gap:8px;flex-wrap:wrap;margin:16px 0"><button type="button" class="action secondary note-filter active" data-category="Alle">Alle</button><button type="button" class="action secondary note-filter" data-category="Privat">🏡 Privat</button><button type="button" class="action secondary note-filter" data-category="Schule">📚 Schule</button><button type="button" class="action secondary note-filter" data-category="Volleyball">🏐 Volleyball</button><button type="button" class="action secondary note-filter" data-category="Sonstiges">📌 Sonstiges</button></div><div id="notesList"></div></div>
 <div id="page-football" class="hidden"><div class="sport-banner"><span class="sport-ball">⚽</span><span class="bvb-mark">BVB<br>09</span><div><h3>Fußball</h3><p>Spiele, Ergebnisse und Tabellen deiner Lieblingsvereine</p></div></div><h2>⚽ Fußball</h2><p class="muted">Wähle deinen Verein und öffne Spielplan, Ergebnisse oder Tabelle. Öffne Live-Spielstände, Spielpläne und Ergebnisse bei Sportschau Live & Ergebnisse.</p>
 <label for="footballTeam" class="muted">Verein auswählen</label><select id="footballTeam" style="width:100%;margin:6px 0 14px"><option value="bvb">Borussia Dortmund</option><option value="h96">Hannover 96</option><option value="havelse">TSV Havelse</option></select>
 <div class="row sport-tabs" id="footballTabs"><button class="action" data-sporttab="schedule">📅 Spielplan</button><button class="action secondary" data-sporttab="results">🏁 Ergebnisse</button><button class="action secondary" data-sporttab="table">📊 Tabelle</button></div><div id="footballContent" class="grid"></div><p class="muted">Hinweis: Die App speichert keine externen Sportdaten und benötigt keine API-Schlüssel. Aktuelle Fußball-Spielstände und Ergebnisse öffnest du bei Sportschau Live & Ergebnisse; Volleyballtermine bleiben bei NWVV/SAMS. Dafür ist eine Internetverbindung nötig.</p></div>
@@ -510,22 +510,21 @@ async function loadNotes(){
  if(error){status('syncStatus','Notizen konnten nicht geladen werden: '+error.message,true);return}
  notes=data||[];renderNotes();
 }
+let activeNoteCategory='Alle';
+function noteCategoryOf(note){const m=(note.content||'').match(/^\[Kategorie:(Privat|Schule|Volleyball|Sonstiges)\]\n/);return m?m[1]:'Privat'}
+function noteTextOf(note){return (note.content||'').replace(/^\[Kategorie:(Privat|Schule|Volleyball|Sonstiges)\]\n/,'')}
+document.querySelectorAll('.note-filter').forEach(btn=>btn.addEventListener('click',()=>{activeNoteCategory=btn.dataset.category;document.querySelectorAll('.note-filter').forEach(b=>b.classList.toggle('active',b===btn));renderNotes()}));
 function renderNotes(){
  const root=$('notesList');if(!root)return;root.innerHTML='';
- if(!notes.length){root.innerHTML='<div class="empty">Noch keine Notizen. Schreibe oben deine erste Notiz.</div>';return}
- notes.forEach(note=>{
-  const card=document.createElement('article');card.className='card';card.style.margin='12px 0';
-  const title=document.createElement('h3');title.textContent=note.title;
-  const content=document.createElement('p');content.style.whiteSpace='pre-wrap';content.style.overflowWrap='anywhere';content.textContent=note.content||'';
-  const meta=document.createElement('small');meta.className='muted';meta.textContent=note.created_at?new Date(note.created_at).toLocaleString('de-DE',{dateStyle:'medium',timeStyle:'short'}):'';
-  const del=document.createElement('button');del.className='delete';del.textContent='Notiz löschen';del.onclick=()=>deleteNote(note.id);
-  card.append(title,content,meta,document.createElement('br'),del);root.append(card);
- });
+ const shown=notes.filter(n=>activeNoteCategory==='Alle'||noteCategoryOf(n)===activeNoteCategory);
+ if(!shown.length){root.innerHTML='<div class="empty">'+(notes.length?'In dieser Kategorie gibt es noch keine Notizen.':'Noch keine Notizen. Schreibe oben deine erste Notiz.')+'</div>';return}
+ const groups=['Privat','Schule','Volleyball','Sonstiges'];
+ groups.filter(cat=>activeNoteCategory==='Alle'||cat===activeNoteCategory).forEach(cat=>{const group=shown.filter(n=>noteCategoryOf(n)===cat);if(!group.length)return;const section=document.createElement('section');section.style.margin='18px 0';const heading=document.createElement('h3');heading.textContent=({'Privat':'🏡 Privat','Schule':'📚 Schule','Volleyball':'🏐 Volleyball','Sonstiges':'📌 Sonstiges'})[cat];section.append(heading);const table=document.createElement('div');table.style.cssText='display:grid;gap:8px';group.forEach(note=>{const card=document.createElement('article');card.className='card';card.style.cssText='display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:start;padding:14px';const body=document.createElement('div');const title=document.createElement('strong');title.textContent=note.title;const content=document.createElement('p');content.style.cssText='white-space:pre-wrap;overflow-wrap:anywhere;margin:6px 0';content.textContent=noteTextOf(note);const meta=document.createElement('small');meta.className='muted';meta.textContent=note.created_at?new Date(note.created_at).toLocaleString('de-DE',{dateStyle:'medium',timeStyle:'short'}):'';body.append(title,content,meta);const del=document.createElement('button');del.className='delete';del.textContent='Löschen';del.onclick=()=>deleteNote(note.id);card.append(body,del);table.append(card)});section.append(table);root.append(section)});
 }
 $('noteForm').addEventListener('submit',async e=>{
  e.preventDefault();
  if(!sb||!currentUser){status('syncStatus','Bitte zuerst anmelden.',true);return}
- const title=$('noteTitle').value.trim(),content=$('noteContent').value.trim();
+ const title=$('noteTitle').value.trim(),textContent=$('noteContent').value.trim(),category=$('noteCategory').value,content='[Kategorie:'+category+']\n'+textContent;
  if(!title){$('noteTitle').focus();return}
  const {error}=await sb.from('notes').insert({user_id:currentUser.id,title,content});
  if(error){status('syncStatus','Notiz konnte nicht gespeichert werden: '+error.message,true);return}
