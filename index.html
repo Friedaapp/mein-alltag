@@ -195,6 +195,12 @@ button,a.action,select,input{touch-action:manipulation}
 .daily-focus-grid .dash-holiday-card{background:linear-gradient(135deg,#c9e8f4 0%,#f8e5b9 70%,#e5edda 100%)}
 @media(max-width:600px){.daily-focus-grid>div{min-height:165px;padding:12px}.daily-focus-grid .dash-art-icon{font-size:2.4rem;margin-bottom:8px}.daily-focus-grid>div strong{font-size:.98rem}}
 
+
+.meal-entry-card{background:linear-gradient(135deg,#fff2dc,#fffaf0 65%,#f5ead7);border-color:#ead7b7;box-shadow:0 8px 24px #8b70401a}
+.meal-entry-card h3{display:flex;align-items:center;gap:8px;color:#4c603d}
+.meal-entry-card form{gap:9px}
+.meal-entry-card input[type=date],.meal-entry-card input[type=text],#mealName{width:100%;background:#fffdf7;border-color:#e6d6b9}
+#mealList .card{background:linear-gradient(145deg,#f0f5e9,#fffdf6);border-color:#dce6d2}
 </style>
 </head>
 <body>
@@ -296,16 +302,15 @@ button,a.action,select,input{touch-action:manipulation}
   </div>
 </div>
  <div id="page-mealplan" class="hidden">
- <h2>🍽️ Essensplan & Rezepte</h2>
- <p class="muted">Plane deine Mahlzeiten für die Woche. Zutaten kannst du mit einem Klick in die Einkaufsliste übernehmen.</p>
- <div class="card" style="margin:14px 0"><h3>Mahlzeit eintragen</h3>
+ <h2>🍽️ Was gibt es diese Woche?</h2>
+ <p class="muted">Ein Gericht pro Tag – ganz einfach und ohne unnötigen Aufwand.</p>
+ <div class="card meal-entry-card" style="margin:14px 0">
+  <h3>🥘 Essen für einen Tag eintragen</h3>
   <form id="mealForm">
-   <label for="mealDate" class="muted">Tag</label><input id="mealDate" type="date" required>
-   <label for="mealType" class="muted">Mahlzeit</label><select id="mealType"><option>Frühstück</option><option>Mittagessen</option><option>Abendessen</option><option>Snack</option></select>
-   <input id="mealName" placeholder="Gericht, z. B. Gemüsepfanne" maxlength="180" required>
-   <textarea id="mealIngredients" placeholder="Zutaten, durch Kommas getrennt" rows="2" maxlength="2000" style="width:100%;resize:vertical;border:1px solid #d8dfd3;border-radius:12px;padding:12px;font:inherit;background:#fffefa;color:var(--ink)"></textarea>
-   <textarea id="mealRecipe" placeholder="Rezept / Zubereitung (optional)" rows="3" maxlength="5000" style="width:100%;resize:vertical;border:1px solid #d8dfd3;border-radius:12px;padding:12px;font:inherit;background:#fffefa;color:var(--ink)"></textarea>
-   <button class="action" type="submit">＋ Mahlzeit speichern</button>
+   <label for="mealDate" class="muted">Für welchen Tag?</label><input id="mealDate" type="date" required>
+   <label for="mealName" class="muted">Was gibt es zu essen?</label>
+   <input id="mealName" placeholder="z. B. Gemüsepfanne mit Reis" maxlength="180" required>
+   <button class="action" type="submit">＋ Essen speichern</button>
   </form>
  </div>
  <div class="row" style="align-items:center"><button class="action secondary" id="mealPrev" type="button">← Vorige Woche</button><strong id="mealWeekLabel" style="text-align:center">Diese Woche</strong><button class="action secondary" id="mealNext" type="button">Nächste Woche →</button></div>
@@ -370,7 +375,7 @@ function updateSmartDashboard(){
  const shopEl=$('dashShopping');if(shopEl){const n=shoppingItems.filter(x=>!x.is_done).length;shopEl.textContent=n===0?'Alles erledigt ✓':n+' Artikel auf der Liste'}
  const mealEl=$('dashMeal');if(mealEl){
   const todayMeals=meals.filter(m=>m.meal_date===today).sort((a,b)=>(a.meal_type||'').localeCompare(b.meal_type||''));
-  mealEl.textContent=todayMeals.length?todayMeals.map(m=>(m.meal_type?m.meal_type+': ':'')+m.meal_name).join(' · '):'Noch keine Mahlzeit eingetragen';
+  mealEl.textContent=todayMeals.length?todayMeals.map(m=>m.meal_name).join(' · '):'Noch keine Mahlzeit eingetragen';
  }
  const holidayEl=$('dashHoliday');if(holidayEl){
   const d=new Date();d.setHours(12,0,0,0);
@@ -553,15 +558,12 @@ function renderMeals(){
  const monday=mealMonday(mealWeekOffset),sunday=new Date(monday);sunday.setDate(monday.getDate()+6);
  $('mealWeekLabel').textContent=monday.toLocaleDateString('de-DE',{day:'2-digit',month:'short'})+' – '+sunday.toLocaleDateString('de-DE',{day:'2-digit',month:'short',year:'numeric'});
  const from=localDateString(monday),to=localDateString(sunday);
- const week=meals.filter(m=>m.meal_date>=from&&m.meal_date<=to).sort((a,b)=>(a.meal_date+a.meal_type).localeCompare(b.meal_date+b.meal_type));
+ const week=meals.filter(m=>m.meal_date>=from&&m.meal_date<=to).sort((a,b)=>a.meal_date.localeCompare(b.meal_date));
  if(!week.length){root.innerHTML='<div class="empty">Für diese Woche sind noch keine Mahlzeiten geplant.</div>';updateSmartDashboard();return}
  week.forEach(m=>{
   const card=document.createElement('article');card.className='card';
-  const date=document.createElement('div');date.className='section-kicker';date.textContent=dateFromLocalString(m.meal_date).toLocaleDateString('de-DE',{weekday:'long',day:'2-digit',month:'2-digit'})+' · '+m.meal_type;
+  const date=document.createElement('div');date.className='section-kicker';date.textContent='🍽️ '+dateFromLocalString(m.meal_date).toLocaleDateString('de-DE',{weekday:'long',day:'2-digit',month:'long'});
   const title=document.createElement('h3');title.textContent=m.meal_name||'Mahlzeit';card.append(date,title);
-  if(m.ingredients){const ing=document.createElement('p');ing.className='muted';ing.textContent='Zutaten: '+m.ingredients;card.append(ing)}
-  if(m.recipe){const rec=document.createElement('p');rec.style.whiteSpace='pre-wrap';rec.textContent=m.recipe;card.append(rec)}
-  if(m.ingredients){const add=document.createElement('button');add.className='action secondary';add.type='button';add.textContent='Zutaten zur Einkaufsliste';add.onclick=()=>addMealIngredients(m.ingredients);card.append(add)}
   const del=document.createElement('button');del.className='delete';del.style.marginTop='8px';del.textContent='Mahlzeit löschen';del.onclick=()=>deleteMeal(m.id);card.append(del);root.append(card);
  });
  updateSmartDashboard();
@@ -574,14 +576,14 @@ async function addMealIngredients(text){
  await loadShopping();alert(items.length+' Zutat/Zutaten wurden zur Einkaufsliste hinzugefügt.');
 }
 $('mealForm')?.addEventListener('submit',async e=>{
- e.preventDefault();const meal={meal_date:$('mealDate').value,meal_type:$('mealType').value,meal_name:$('mealName').value.trim(),ingredients:$('mealIngredients').value.trim(),recipe:$('mealRecipe').value.trim(),user_id:currentUser?.id||null};
+ e.preventDefault();const meal={meal_date:$('mealDate').value,meal_type:'Essen',meal_name:$('mealName').value.trim(),user_id:currentUser?.id||null};
  if(!meal.meal_date||!meal.meal_name)return;
  if(sb&&currentUser){
   const {error}=await sb.from('meal_plans').insert(meal);
-  if(!error){$('mealName').value='';$('mealIngredients').value='';$('mealRecipe').value='';await loadMeals();status('syncStatus','Mahlzeit synchronisiert ✓');return}
+  if(!error){$('mealName').value='';await loadMeals();status('syncStatus','Mahlzeit synchronisiert ✓');return}
   $('mealSyncHint').textContent='Supabase-Zusatztabelle fehlt noch; Mahlzeit wird lokal gespeichert.';
  }
- meal.id='local_'+Date.now();meals.push(meal);writeLocalMeals();$('mealName').value='';$('mealIngredients').value='';$('mealRecipe').value='';renderMeals();
+ meal.id='local_'+Date.now();meals.push(meal);writeLocalMeals();$('mealName').value='';renderMeals();
 });
 async function deleteMeal(id){
  if(!confirm('Diese Mahlzeit löschen?'))return;
