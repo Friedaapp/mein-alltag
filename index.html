@@ -219,6 +219,28 @@ button,a.action,select,input{touch-action:manipulation}
 .daily-focus .section-kicker{display:block;margin-bottom:8px}
 @media(max-width:600px){.header-commute-row .commute-shortcut{height:38px;gap:3px;padding:4px 3px;border-radius:9px;flex-direction:column}.commute-emoji{font-size:17px}.commute-label{font-size:10px}.daily-focus-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.daily-focus-grid>div{min-height:178px;padding:12px;border-radius:18px}.daily-focus-grid .dash-art-icon{font-size:29px;margin-bottom:7px}.daily-focus-grid strong{font-size:1rem}.daily-focus-grid .muted{font-size:.9rem}.daily-focus-grid .text-action{font-size:.85rem;padding:7px 8px;max-width:100%}}
 
+
+/* Visueller Feinschliff nach Wunsch: mehr Bildwirkung, klare Header-Reihen und kompakte Pendel-Buttons */
+header .brand-row{gap:clamp(10px,2vw,24px)}
+header .brand-logo{width:clamp(76px,12vw,124px);height:clamp(76px,12vw,124px);flex-basis:clamp(76px,12vw,124px);border-radius:22px}
+.header-art img.club-logo,.header-art img:not(.brand-logo){width:clamp(66px,8vw,96px);height:clamp(66px,8vw,96px);border-radius:16px;padding:4px}
+.header-link-row{gap:clamp(8px,1.5vw,18px)}
+.header-commute-row .commute-shortcut{min-height:54px;height:54px;gap:8px;border-radius:14px;font-size:15px;box-shadow:0 4px 12px #17281926}
+.header-commute-row .commute-emoji{font-size:24px}
+.header-commute-row .commute-label{font-size:clamp(12px,1.3vw,15px);font-weight:750}
+.daily-focus-grid>div{min-height:205px;padding:19px;border-radius:24px;box-shadow:0 9px 22px #344a3014}
+.daily-focus-grid .dash-calendar-card{background:linear-gradient(120deg,rgba(226,240,216,.98),rgba(247,248,235,.96)),radial-gradient(circle at 90% 100%,#9ab58c,transparent 40%)}
+.daily-focus-grid .dash-meal-card{background:linear-gradient(120deg,#fff0d8,#f8dfb9)}
+.daily-focus-grid .dash-shopping-card{background:linear-gradient(120deg,#ffedbf,#f7dfaa)}
+.daily-focus-grid .dash-holiday-card{background:linear-gradient(130deg,#bde5f1 0%,#fbe4b5 58%,#e1edd6 100%)}
+.daily-focus-grid .dash-calendar-card:after{content:"🗓️";font-size:clamp(60px,8vw,94px);right:8px;bottom:5px;opacity:.28}
+.daily-focus-grid .dash-meal-card:after{content:"🥘";font-size:clamp(60px,8vw,94px);right:8px;bottom:5px;opacity:.3}
+.daily-focus-grid .dash-shopping-card:after{content:"🛒";font-size:clamp(60px,8vw,94px);right:8px;bottom:5px;opacity:.3}
+.daily-focus-grid .dash-holiday-card:after{content:"🏝️";font-size:clamp(70px,10vw,110px);right:5px;bottom:0;opacity:.8}
+.daily-focus-grid .dash-art-icon{font-size:clamp(34px,4vw,46px);filter:drop-shadow(0 4px 4px #243c241f)}
+.daily-focus-grid .text-action{background:#ffffffa8;border-radius:14px;padding:9px 12px}
+@media(max-width:600px){header .brand-row{gap:9px}header .brand-logo{width:clamp(68px,18vw,90px);height:clamp(68px,18vw,90px);flex-basis:clamp(68px,18vw,90px)}.header-art img.club-logo,.header-art img:not(.brand-logo){width:clamp(46px,12vw,64px);height:clamp(46px,12vw,64px);border-radius:11px}.header-link-row{gap:5px}.header-commute-row .commute-shortcut{height:43px;min-height:43px;flex-direction:row;gap:3px;padding:4px 2px;border-radius:10px}.header-commute-row .commute-emoji{font-size:18px}.header-commute-row .commute-label{font-size:clamp(10px,2.6vw,12px)}.daily-focus-grid>div{min-height:188px;padding:12px}.daily-focus-grid .dash-art-icon{font-size:30px}.daily-focus-grid>div:after{font-size:52px}.daily-focus-grid .dash-holiday-card:after{font-size:66px}}
+
 </style>
 </head>
 <body>
