@@ -787,6 +787,16 @@ $('weatherForm').addEventListener('submit',e=>{e.preventDefault();loadWeather(tr
 loadWeather();setInterval(()=>{if(!document.hidden)loadWeather(true)},15*60*1000);document.addEventListener('visibilitychange',()=>{if(!document.hidden&&Date.now()-weatherLastLoaded>15*60*1000)loadWeather(true)});
 if('serviceWorker' in navigator && location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js').catch(()=>{});
 </script>
+
+<style id="meal-days-no-scroll-mobile">
+/* Sieben Wochentage passen auf kleinen Displays nebeneinander, ohne horizontales Scrollen */
+@media (max-width: 600px) {
+  .dash-meal-days { display:grid !important; grid-template-columns:repeat(7,minmax(0,1fr)) !important; gap:3px !important; overflow:visible !important; padding:2px 0 6px !important; scroll-snap-type:none !important; }
+  .dash-meal-day { box-sizing:border-box; flex:none !important; width:auto !important; min-width:0 !important; max-width:100%; padding:6px 1px !important; min-height:48px !important; border-radius:9px !important; scroll-snap-align:none !important; }
+  .dash-meal-day strong { display:block; font-size:clamp(10px,2.8vw,13px) !important; line-height:1.15; white-space:nowrap; }
+  .dash-meal-day small { display:block; font-size:clamp(9px,2.4vw,11px) !important; line-height:1.2; }
+}
+</style>
 </body></html>
 
 <style id="final-header-dashboard-polish">
