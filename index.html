@@ -241,6 +241,10 @@ header .brand-logo{width:clamp(76px,12vw,124px);height:clamp(76px,12vw,124px);fl
 .daily-focus-grid .text-action{background:#ffffffa8;border-radius:14px;padding:9px 12px}
 @media(max-width:600px){header .brand-row{gap:9px}header .brand-logo{width:clamp(68px,18vw,90px);height:clamp(68px,18vw,90px);flex-basis:clamp(68px,18vw,90px)}.header-art img.club-logo,.header-art img:not(.brand-logo){width:clamp(46px,12vw,64px);height:clamp(46px,12vw,64px);border-radius:11px}.header-link-row{gap:5px}.header-commute-row .commute-shortcut{height:43px;min-height:43px;flex-direction:row;gap:3px;padding:4px 2px;border-radius:10px}.header-commute-row .commute-emoji{font-size:18px}.header-commute-row .commute-label{font-size:clamp(10px,2.6vw,12px)}.daily-focus-grid>div{min-height:188px;padding:12px}.daily-focus-grid .dash-art-icon{font-size:30px}.daily-focus-grid>div:after{font-size:52px}.daily-focus-grid .dash-holiday-card:after{font-size:66px}}
 
+
+.meal-day-tabs{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px;margin:16px 0 8px}.meal-day-tab{border:1px solid #e2e7d8;background:#fffdf7;border-radius:13px;padding:9px 2px;text-align:center;color:var(--ink);font:inherit;cursor:pointer;min-width:0}.meal-day-tab strong,.meal-day-tab small{display:block}.meal-day-tab small{font-size:.72rem;color:var(--muted)}.meal-day-tab.active{background:#dfead6;border:2px solid #6f8c61;font-weight:750}.meal-selected-card{background:linear-gradient(135deg,#fbe8c9,#fff4e2 55%,#e8efd9);min-height:145px;position:relative;overflow:hidden}.meal-selected-card:after{content:"🍲";position:absolute;right:10px;bottom:0;font-size:clamp(56px,13vw,90px);opacity:.24;pointer-events:none}.meal-selected-card h3{font-size:1.25rem}.meal-selected-card .meal-big-name{font-size:1.3rem;font-weight:700;max-width:75%;overflow-wrap:anywhere}.meal-selected-card .meal-actions{position:relative;z-index:1;margin-top:12px;display:flex;gap:8px;flex-wrap:wrap}
+.event-edit{border:0;background:#e5edda;color:#42633f;border-radius:9px;padding:7px 10px;cursor:pointer;font:inherit;font-weight:600}
+@media(max-width:440px){.meal-day-tabs{gap:3px}.meal-day-tab{padding:8px 0;font-size:.85rem}.meal-day-tab small{font-size:.65rem}}
 </style>
 </head>
 <body>
@@ -353,7 +357,7 @@ header .brand-logo{width:clamp(76px,12vw,124px);height:clamp(76px,12vw,124px);fl
   </form>
  </div>
  <div class="row" style="align-items:center"><button class="action secondary" id="mealPrev" type="button">← Vorige Woche</button><strong id="mealWeekLabel" style="text-align:center">Diese Woche</strong><button class="action secondary" id="mealNext" type="button">Nächste Woche →</button></div>
- <p class="muted" id="mealSyncHint">Essensplan: lokale Speicherung, bis die Supabase-Zusatztabelle eingerichtet ist.</p><div id="mealList" class="grid"></div>
+ <div id="mealDayTabs" class="meal-day-tabs" aria-label="Tag auswählen"></div><article id="mealSelectedCard" class="card meal-selected-card" style="margin-top:12px"></article><p class="muted" id="mealSyncHint">Essensplan: lokale Speicherung, bis die Supabase-Zusatztabelle eingerichtet ist.</p><div id="mealList" class="grid"></div>
 </div>
 <div id="page-personalize" class="hidden">
  <h2>🎨 Design & Personalisierung</h2><p class="muted">Passe Farben und Startansicht an. Diese Einstellungen werden auf diesem Gerät im Browser gespeichert.</p>
@@ -395,7 +399,7 @@ const $ = id => document.getElementById(id);
 const localRead = key => { try{return JSON.parse(localStorage.getItem(key)||"[]")}catch{return []} };
 const localWrite = (key,val) => localStorage.setItem(key,JSON.stringify(val));
 function status(id,msg,error=false){$(id).textContent=msg;$(id).className="status "+(error?"error":"ok")}
-function showPage(page){document.querySelectorAll('[id^="page-"]').forEach(el=>el.classList.add('hidden'));$('page-'+page).classList.remove('hidden');document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===page));if(page==='events'){renderEvents();if(!$('eventDate').value)$('eventDate').value=localDateString(new Date())};if(page==='shopping')renderShopping();if(page==='notes')renderNotes();if(page==='weather')loadWeather();if(page==='football')renderFootball();if(page==='volleyball')renderVolleyball();if(page==='mealplan'){renderMeals();if(!$('mealDate').value)$('mealDate').value=localDateString(new Date())}if(page==='holidays')renderHolidayCountdowns();if(page==='commute'){}}
+function showPage(page){document.querySelectorAll('[id^="page-"]').forEach(el=>el.classList.add('hidden'));$('page-'+page).classList.remove('hidden');document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===page));if(page==='events'){renderEvents();if(!$('eventDate').value)$('eventDate').value=localDateString(new Date())};if(page==='shopping')renderShopping();if(page==='notes')renderNotes();if(page==='weather')loadWeather();if(page==='football')renderFootball();if(page==='volleyball')renderVolleyball();if(page==='mealplan'){if(!$('mealDate').value)$('mealDate').value=localDateString(new Date());selectedMealDate=$('mealDate').value;renderMeals()}if(page==='holidays')renderHolidayCountdowns();if(page==='commute'){}}
 document.querySelectorAll('#nav button').forEach(b=>b.addEventListener('click',()=>{showPage(b.dataset.page);if(window.matchMedia('(max-width:700px)').matches)b.scrollIntoView({block:'nearest',inline:'center',behavior:'smooth'});}));
 async function loadTasks(){if(!sb||!currentUser)return;status('syncStatus','Synchronisiere …');const {data,error}=await sb.from('tasks').select('*').order('created_at',{ascending:false});if(error){status('syncStatus','Synchronisierung fehlgeschlagen: '+error.message,true);return}tasks=data||[];renderTasks();renderWeek();updateCounts();status('syncStatus','Synchronisiert ✓')}
 function renderTasks(){const root=$('taskList');root.innerHTML='';if(!tasks.length){root.innerHTML='<div class="empty">Noch keine Aufgaben. Füge oben deine erste Aufgabe hinzu.</div>';return}for(const t of tasks){const row=document.createElement('div');row.className='item';const check=document.createElement('input');check.type='checkbox';check.checked=t.is_done;check.setAttribute('aria-label','Erledigt');check.addEventListener('change',()=>updateTask(t.id,{is_done:check.checked}));const text=document.createElement('div');text.className='grow';const title=document.createElement('span');title.textContent=t.title;title.className=t.is_done?'done':'';text.append(title);const meta=document.createElement('small');meta.textContent=t.category+(t.due_date?' · '+t.due_date:'');text.append(meta);const del=document.createElement('button');del.className='delete';del.textContent='Löschen';del.addEventListener('click',()=>deleteTask(t.id));row.append(check,text,del);root.append(row)}}
@@ -419,7 +423,7 @@ function updateSmartDashboard(){
  const holidayEl=$('dashHoliday');if(holidayEl){
   const d=new Date();d.setHours(12,0,0,0);
   const next=niedersachsenHolidays.filter(h=>holidayDate(h.end)>=d).sort((a,b)=>holidayDate(a.start)-holidayDate(b.start))[0];
-  if(next){const st=holidayState(next,new Date(d));holidayEl.textContent=next.name+' · '+st.text;const bar=$('dashHolidayProgress');if(bar){const fill=bar.firstElementChild;if(st.kind==='during'){const total=Math.max(1,holidayDayDiff(next.start,next.end)+1);const elapsed=Math.max(0,holidayDayDiff(next.start,today));fill.style.width=Math.min(100,Math.round(elapsed/total*100))+'%';bar.style.display='block';holidayEl.textContent=next.name+' · '+st.text;}else{fill.style.width='0%';bar.style.display='block';}}}else{holidayEl.textContent='Keine Termine hinterlegt';const bar=$('dashHolidayProgress');if(bar)bar.style.display='none';}
+  if(next){const st=holidayState(next,new Date(d));holidayEl.textContent=next.name+' · '+st.text;const bar=$('dashHolidayProgress');if(bar){const fill=bar.firstElementChild;let progress=0;if(st.kind==='during'){const total=Math.max(1,holidayDayDiff(next.start,next.end)+1);const elapsed=Math.max(0,holidayDayDiff(next.start,today));progress=Math.round(elapsed/total*100)}else{const previous=[...niedersachsenHolidays].filter(h=>holidayDate(h.end)<holidayDate(next.start)).sort((a,b)=>holidayDate(b.end)-holidayDate(a.end))[0];const start=previous?holidayDate(previous.end):new Date(d);const end=holidayDate(next.start);const span=Math.max(1,Math.ceil((end-start)/86400000));const elapsed=Math.max(0,Math.ceil((d-start)/86400000));progress=Math.min(95,Math.round(elapsed/span*100));}fill.style.width=progress+'%';bar.style.display='block';}}else{holidayEl.textContent='Keine Termine hinterlegt';const bar=$('dashHolidayProgress');if(bar)bar.style.display='none';}
  }
 }
 function updateCounts(){
@@ -468,8 +472,8 @@ function renderEvents(){
     const row=document.createElement('div');row.className='item';
     const text=document.createElement('div');text.className='grow';text.textContent=item.title;
     const meta=document.createElement('small');meta.textContent=dateFromLocalString(item.event_date).toLocaleDateString('de-DE',{weekday:'short',day:'2-digit',month:'2-digit',year:'numeric'})+(item.event_time?' · '+String(item.event_time).slice(0,5):'');text.append(meta);
-    const del=document.createElement('button');del.className='delete';del.textContent='Löschen';del.onclick=()=>deleteEvent(item.id);
-    row.append(text,del);root.append(row);
+    const edit=document.createElement('button');edit.className='event-edit';edit.textContent='Bearbeiten';edit.onclick=()=>editEvent(item);const del=document.createElement('button');del.className='delete';del.textContent='Löschen';del.onclick=()=>deleteEvent(item.id);
+    row.append(text,edit,del);root.append(row);
   });
 }
 function renderWeek(){
@@ -485,7 +489,7 @@ function renderWeek(){
   const taskDay=tasks.filter(t=>(t.due_date===key||t.task_date===key||t.event_date===key));
   if(key<localDateString(now))col.classList.add('past-day');
   if(!todays.length&&!taskDay.length){const empty=document.createElement('div');empty.className='week-empty';empty.textContent='Noch nichts geplant';col.append(empty)}
-  todays.forEach(e=>{const item=document.createElement('div');item.className='day-event';if(e.event_time){const time=document.createElement('time');time.textContent=String(e.event_time).slice(0,5);item.append(time)}const label=document.createElement('span');label.textContent=e.title;item.append(label);col.append(item)});
+  todays.forEach(e=>{const item=document.createElement('div');item.className='day-event';if(e.event_time){const time=document.createElement('time');time.textContent=String(e.event_time).slice(0,5);item.append(time)}const label=document.createElement('span');label.textContent=e.title;item.append(label);item.title='Tippen, um Termin zu bearbeiten';item.style.cursor='pointer';item.addEventListener('click',()=>editEvent(e));col.append(item)});
   taskDay.forEach(t=>{const item=document.createElement('div');item.className='week-task';const check=document.createElement('input');check.type='checkbox';check.checked=!!t.is_done;check.setAttribute('aria-label','Aufgabe erledigt');check.addEventListener('change',()=>updateTask(t.id,{is_done:check.checked}));const wrap=document.createElement('div');wrap.className='week-task-title'+(t.is_done?' done':'');const title=document.createElement('span');title.textContent=t.title;wrap.append(title);const move=document.createElement('input');move.type='date';move.className='week-task-date';move.value=t.due_date||t.task_date||t.event_date||key;move.setAttribute('aria-label','Aufgabe auf einen anderen Tag verschieben');move.title='Fälligkeit ändern';move.addEventListener('change',()=>{if(move.value)updateTask(t.id,{due_date:move.value})});wrap.append(move);item.append(check,wrap);col.append(item)});
   const addRow=document.createElement('div');addRow.className='week-add-row';const addEvent=document.createElement('button');addEvent.type='button';addEvent.className='action secondary';addEvent.textContent='+ Termin';addEvent.onclick=()=>{$('eventDate').value=key;$('eventTitle').focus();$('eventForm').scrollIntoView({behavior:'smooth',block:'center'})};const addTask=document.createElement('button');addTask.type='button';addTask.className='action secondary';addTask.textContent='+ Aufgabe';addTask.onclick=async()=>{const title=prompt('Welche Aufgabe möchtest du für '+date.toLocaleDateString('de-DE',{weekday:'long',day:'2-digit',month:'2-digit'})+' eintragen?');if(!title||!title.trim())return;if(!currentUser)return;const {error}=await sb.from('tasks').insert({title:title.trim(),category:'Privat',due_date:key,is_done:false,user_id:currentUser.id});if(error){status('syncStatus','Aufgabe konnte nicht gespeichert werden: '+error.message,true);return}await loadTasks();status('syncStatus','Aufgabe gespeichert ✓')};addRow.append(addEvent,addTask);col.append(addRow);
   grid.append(col);
@@ -493,6 +497,15 @@ function renderWeek(){
 }
 $('prevWeek').addEventListener('click',()=>{weekOffset--;renderWeek()});
 $('nextWeek').addEventListener('click',()=>{weekOffset++;renderWeek()});
+async function editEvent(item){
+ const title=prompt('Termin bearbeiten – Titel:',item.title||'');if(title===null)return;if(!title.trim()){alert('Bitte einen Titel eingeben.');return}
+ const date=prompt('Datum (JJJJ-MM-TT):',item.event_date||'');if(date===null)return;if(!/^\d{4}-\d{2}-\d{2}$/.test(date)){alert('Bitte das Datum als JJJJ-MM-TT eingeben.');return}
+ const time=prompt('Uhrzeit (HH:MM), leer lassen wenn keine Uhrzeit:',String(item.event_time||'').slice(0,5));if(time===null)return;if(time&&!/^([01]\d|2[0-3]):[0-5]\d$/.test(time)){alert('Bitte eine Uhrzeit im Format HH:MM eingeben.');return}
+ if(!sb||!currentUser){alert('Zum Bearbeiten bitte anmelden.');return}
+ const {error}=await sb.from('events').update({title:title.trim(),event_date:date,event_time:time||null}).eq('id',item.id);
+ if(error){status('syncStatus','Termin konnte nicht geändert werden: '+error.message,true);return}
+ await loadEvents();status('syncStatus','Termin geändert ✓');
+}
 async function deleteEvent(id){
   if(!confirm('Diesen Termin löschen?'))return;
   const {error}=await sb.from('events').delete().eq('id',id);
@@ -591,21 +604,20 @@ async function loadMeals(){
  meals=readLocalMeals();renderMeals();
 }
 function mealMonday(offset){const d=new Date();d.setHours(12,0,0,0);d.setDate(d.getDate()-((d.getDay()+6)%7)+offset*7);return d}
+let selectedMealDate=localDateString(new Date());
 function renderMeals(){
  const root=$('mealList');if(!root)return;root.innerHTML='';
  const monday=mealMonday(mealWeekOffset),sunday=new Date(monday);sunday.setDate(monday.getDate()+6);
  $('mealWeekLabel').textContent=monday.toLocaleDateString('de-DE',{day:'2-digit',month:'short'})+' – '+sunday.toLocaleDateString('de-DE',{day:'2-digit',month:'short',year:'numeric'});
- const from=localDateString(monday),to=localDateString(sunday);
+ const from=localDateString(monday),to=localDateString(sunday);if(selectedMealDate<from||selectedMealDate>to)selectedMealDate=from;
+ const tabs=$('mealDayTabs');if(tabs){tabs.innerHTML='';for(let i=0;i<7;i++){const d=new Date(monday);d.setDate(monday.getDate()+i);const key=localDateString(d);const b=document.createElement('button');b.type='button';b.className='meal-day-tab'+(key===selectedMealDate?' active':'');b.innerHTML='<strong>'+['Mo','Di','Mi','Do','Fr','Sa','So'][i]+'</strong><small>'+d.getDate()+'.</small>';b.setAttribute('aria-pressed',String(key===selectedMealDate));b.onclick=()=>{selectedMealDate=key;$('mealDate').value=key;renderMeals()};tabs.append(b)}}
+ const meal=meals.find(m=>m.meal_date===selectedMealDate);const selected=$('mealSelectedCard');if(selected){selected.innerHTML='';const d=dateFromLocalString(selectedMealDate);const kicker=document.createElement('div');kicker.className='section-kicker';kicker.textContent='🍽️ '+d.toLocaleDateString('de-DE',{weekday:'long',day:'2-digit',month:'long'});const title=document.createElement('h3');title.textContent='Das gibt es heute';const name=document.createElement('div');name.className='meal-big-name';name.textContent=meal?.meal_name||'Noch kein Essen eingetragen';selected.append(kicker,title,name);const actions=document.createElement('div');actions.className='meal-actions';const choose=document.createElement('button');choose.type='button';choose.className='action secondary';choose.textContent=meal?'Essen ändern':'Essen für diesen Tag eintragen';choose.onclick=()=>{ $('mealDate').value=selectedMealDate;$('mealName').value=meal?.meal_name||'';$('mealName').focus();$('mealForm').scrollIntoView({behavior:'smooth',block:'center'})};actions.append(choose);if(meal){const del=document.createElement('button');del.type='button';del.className='delete';del.textContent='Löschen';del.onclick=()=>deleteMeal(meal.id);actions.append(del)}selected.append(actions)}
  const week=meals.filter(m=>m.meal_date>=from&&m.meal_date<=to).sort((a,b)=>a.meal_date.localeCompare(b.meal_date));
- if(!week.length){root.innerHTML='<div class="empty">Für diese Woche sind noch keine Mahlzeiten geplant.</div>';updateSmartDashboard();return}
- week.forEach(m=>{
-  const card=document.createElement('article');card.className='card';
-  const date=document.createElement('div');date.className='section-kicker';date.textContent='🍽️ '+dateFromLocalString(m.meal_date).toLocaleDateString('de-DE',{weekday:'long',day:'2-digit',month:'long'});
-  const title=document.createElement('h3');title.textContent=m.meal_name||'Mahlzeit';card.append(date,title);
-  const del=document.createElement('button');del.className='delete';del.style.marginTop='8px';del.textContent='Mahlzeit löschen';del.onclick=()=>deleteMeal(m.id);card.append(del);root.append(card);
- });
+ if(!week.length){root.innerHTML='<div class="empty">Für diese Woche sind noch keine Mahlzeiten geplant. Wähle oben einen Tag und trage dein Essen ein.</div>';updateSmartDashboard();return}
+ const heading=document.createElement('h3');heading.textContent='Geplante Essen dieser Woche';root.append(heading);week.forEach(m=>{const b=document.createElement('button');b.type='button';b.className='card';b.style.cssText='text-align:left;cursor:pointer;color:var(--ink);font:inherit;background:'+(m.meal_date===selectedMealDate?'#e4edda':'#fffdf7');const d=dateFromLocalString(m.meal_date);b.innerHTML='<span class="section-kicker">'+d.toLocaleDateString('de-DE',{weekday:'short',day:'2-digit',month:'short'})+'</span><strong style="display:block">'+escapeHtml(m.meal_name||'Mahlzeit')+'</strong>';b.onclick=()=>{selectedMealDate=m.meal_date;$('mealDate').value=m.meal_date;renderMeals()};root.append(b)});
  updateSmartDashboard();
 }
+function escapeHtml(value){return String(value).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]))}
 async function addMealIngredients(text){
  if(!currentUser||!sb){alert('Bitte zuerst anmelden, um Zutaten in die synchronisierte Einkaufsliste zu übernehmen.');return}
  const items=text.split(/[,;\n]/).map(x=>x.trim()).filter(Boolean);if(!items.length)return;
@@ -615,13 +627,14 @@ async function addMealIngredients(text){
 }
 $('mealForm')?.addEventListener('submit',async e=>{
  e.preventDefault();const meal={meal_date:$('mealDate').value,meal_type:'Essen',meal_name:$('mealName').value.trim(),user_id:currentUser?.id||null};
- if(!meal.meal_date||!meal.meal_name)return;
+ if(!meal.meal_date||!meal.meal_name)return;selectedMealDate=meal.meal_date;
+ const existing=meals.find(m=>m.meal_date===meal.meal_date);
  if(sb&&currentUser){
-  const {error}=await sb.from('meal_plans').insert(meal);
-  if(!error){$('mealName').value='';await loadMeals();status('syncStatus','Mahlzeit synchronisiert ✓');return}
+  const result=existing&&!String(existing.id).startsWith('local_')?await sb.from('meal_plans').update({meal_name:meal.meal_name,meal_type:'Essen'}).eq('id',existing.id):await sb.from('meal_plans').insert(meal);
+  if(!result.error){$('mealName').value='';await loadMeals();status('syncStatus',existing?'Mahlzeit geändert ✓':'Mahlzeit synchronisiert ✓');return}
   $('mealSyncHint').textContent='Supabase-Zusatztabelle fehlt noch; Mahlzeit wird lokal gespeichert.';
  }
- meal.id='local_'+Date.now();meals.push(meal);writeLocalMeals();$('mealName').value='';renderMeals();
+ if(existing){existing.meal_name=meal.meal_name}else{meal.id='local_'+Date.now();meals.push(meal)}writeLocalMeals();$('mealName').value='';renderMeals();
 });
 async function deleteMeal(id){
  if(!confirm('Diese Mahlzeit löschen?'))return;
