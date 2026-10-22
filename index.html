@@ -296,6 +296,7 @@ header .brand-logo{width:clamp(76px,12vw,124px);height:clamp(76px,12vw,124px);fl
 <button data-page="tasks">✓ Aufgaben</button>
 <button data-page="notes">📝 Notizen</button>
 <button data-page="weather">🌦️ Wetter</button>
+<button data-page="countdowns">✨ Countdowns</button>
 <button data-page="football">⚽ Fußball</button>
 <button data-page="volleyball">🏐 Volleyball</button>
 <button data-page="holidays">🏖️ Ferien</button>
@@ -417,9 +418,26 @@ header .brand-logo{width:clamp(76px,12vw,124px);height:clamp(76px,12vw,124px);fl
   <label for="holidayYear" class="muted">Jahr anzeigen</label>
   <select id="holidayYear"><option value="2026">2026</option><option value="2027">2027</option><option value="2028">2028</option><option value="2029">2029</option><option value="2030">2030</option></select>
  </div>
- <div id="holidayCountdownList" class="grid" style="margin-top:12px"></div><section class="card" style="margin-top:20px"><h3>✨ Eigene Countdowns</h3><p class="muted">Geburtstage, Urlaub oder besondere Tage hinzufügen.</p><form id="customCountdownForm"><input id="customCountdownTitle" placeholder="Worauf freust du dich?" maxlength="100" required><label for="customCountdownDate" class="muted">Datum</label><input id="customCountdownDate" type="date" required><button class="action" type="submit">＋ Countdown hinzufügen</button></form><div id="customCountdownList" style="display:grid;gap:10px;margin-top:12px"></div></section>
+ <div id="holidayCountdownList" class="grid" style="margin-top:12px"></div>
  <p class="muted" style="margin-top:16px">Quelle der Ferientermine: Niedersächsisches Kultusministerium. Individuelle bewegliche Ferientage einzelner Schulen können abweichen.</p>
  <p><a href="https://www.mk.niedersachsen.de/startseite/service/ferientermine/schulferien-und-religiose-feiertage-6491.html" target="_blank" rel="noopener">Offizielle Ferienübersicht Niedersachsen ↗</a></p>
+</div>
+<div id="page-countdowns" class="hidden">
+ <section class="countdown-welcome">
+  <div class="countdown-welcome-copy"><span class="section-kicker">✨ Kleine Vorfreude, große Momente</span><h2>Deine Countdowns</h2><p>Urlaub, Geburtstage, besondere Tage – sammle die Dinge, auf die du dich freust.</p></div>
+  <div class="countdown-illustration" aria-hidden="true"><span class="countdown-sun">☀️</span><span class="countdown-cloud">☁️</span><span class="countdown-suitcase">🧳</span><span class="countdown-sparkle">✦</span></div>
+ </section>
+ <section class="card countdown-create-card">
+  <div class="countdown-form-heading"><span class="countdown-form-icon">🎉</span><div><h3>Ein neuer besonderer Tag</h3><p class="muted">Trage ein, worauf du dich freust.</p></div></div>
+  <form id="customCountdownForm" class="countdown-form">
+   <label for="customCountdownTitle">Name des Ereignisses</label><input id="customCountdownTitle" placeholder="z. B. Sommerurlaub, Geburtstag …" maxlength="100" required>
+   <label for="customCountdownDate">Datum</label><input id="customCountdownDate" type="date" required>
+   <button class="action" type="submit">＋ Countdown hinzufügen</button>
+  </form>
+ </section>
+ <div class="countdown-list-heading"><div><h3>Darauf freuen wir uns</h3><p class="muted">Deine persönlichen Ereignisse – automatisch nach Datum sortiert.</p></div><span class="countdown-confetti" aria-hidden="true">🌷</span></div>
+ <div id="customCountdownList" class="countdown-card-grid"></div>
+ <div class="countdown-hint"><span aria-hidden="true">💡</span><p>Deine persönlichen Countdowns werden auf diesem Gerät gespeichert. Sie bleiben auch nach dem Schließen der App erhalten, solange die Browserdaten nicht gelöscht werden.</p></div>
 </div>
 <div id="page-weather" class="hidden"><h2>Wetter</h2><p class="muted">Aktuelles Wetter und Vorhersage über Open-Meteo.</p><form id="weatherForm"><input id="weatherCity" value="Lohnde" placeholder="Ort"><button class="action">Wetter laden</button></form><div id="weatherResult" class="grid"></div><p id="weatherStatus" class="status"></p></div>
 <div style="border-top:1px solid var(--line);margin-top:22px;padding-top:14px"><button id="logoutBtn" class="action secondary">Abmelden</button><span id="syncStatus" class="muted" style="margin-left:10px"></span></div>
@@ -438,7 +456,7 @@ const $ = id => document.getElementById(id);
 const localRead = key => { try{return JSON.parse(localStorage.getItem(key)||"[]")}catch{return []} };
 const localWrite = (key,val) => localStorage.setItem(key,JSON.stringify(val));
 function status(id,msg,error=false){$(id).textContent=msg;$(id).className="status "+(error?"error":"ok")}
-function showPage(page){document.querySelectorAll('[id^="page-"]').forEach(el=>el.classList.add('hidden'));$('page-'+page).classList.remove('hidden');document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===page));if(page==='events'){renderEvents();if(!$('eventDate').value)$('eventDate').value=localDateString(new Date())};if(page==='shopping')renderShopping();if(page==='notes')renderNotes();if(page==='weather')loadWeather();if(page==='football')renderFootball();if(page==='volleyball')renderVolleyball();if(page==='mealplan'){if(!$('mealDate').value)$('mealDate').value=localDateString(new Date());selectedMealDate=$('mealDate').value;renderMeals()}if(page==='holidays')renderHolidayCountdowns();if(page==='commute'){}}
+function showPage(page){document.querySelectorAll('[id^="page-"]').forEach(el=>el.classList.add('hidden'));$('page-'+page).classList.remove('hidden');document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===page));if(page==='events'){renderEvents();if(!$('eventDate').value)$('eventDate').value=localDateString(new Date())};if(page==='shopping')renderShopping();if(page==='notes')renderNotes();if(page==='weather')loadWeather();if(page==='football')renderFootball();if(page==='volleyball')renderVolleyball();if(page==='mealplan'){if(!$('mealDate').value)$('mealDate').value=localDateString(new Date());selectedMealDate=$('mealDate').value;renderMeals()}if(page==='holidays')renderHolidayCountdowns();if(page==='countdowns')renderCustomCountdowns();if(page==='commute'){}}
 document.querySelectorAll('#nav button').forEach(b=>b.addEventListener('click',()=>{showPage(b.dataset.page);if(window.matchMedia('(max-width:700px)').matches)b.scrollIntoView({block:'nearest',inline:'center',behavior:'smooth'});}));
 async function loadTasks(){if(!sb||!currentUser)return;status('syncStatus','Synchronisiere …');const {data,error}=await sb.from('tasks').select('*').order('created_at',{ascending:false});if(error){status('syncStatus','Synchronisierung fehlgeschlagen: '+error.message,true);return}tasks=data||[];renderTasks();renderMonth();renderDayAgenda();updateCounts();status('syncStatus','Synchronisiert ✓')}
 function renderTasks(){
@@ -878,14 +896,21 @@ function getCustomCountdowns(){try{return JSON.parse(localStorage.getItem(CUSTOM
 function renderCustomCountdowns(){
  const root=$('customCountdownList');if(!root)return;root.innerHTML='';
  const items=getCustomCountdowns().sort((a,b)=>a.date.localeCompare(b.date));
- if(!items.length){root.innerHTML='<p class="muted">Noch keine eigenen Countdowns.</p>';return}
+ if(!items.length){root.innerHTML='<div class="countdown-empty"><div class="countdown-empty-art" aria-hidden="true">🎈 🌼 ✨</div><h3>Hier wartet noch Vorfreude</h3><p class="muted">Füge deinen ersten Countdown hinzu – zum Beispiel einen Geburtstag oder den nächsten Urlaub.</p></div>';return}
  const today=new Date();today.setHours(0,0,0,0);
- items.forEach(item=>{
+ const art=[['🏖️','linear-gradient(135deg,#f8dfbd,#fff2dc)'],['🎂','linear-gradient(135deg,#f7d9e7,#fff0f5)'],['🌷','linear-gradient(135deg,#dcebd9,#f2f6e9)'],['🎉','linear-gradient(135deg,#e2ddf5,#f7f2ff)'],['✈️','linear-gradient(135deg,#d7eaf4,#eff8fc)']];
+ items.forEach((item,index)=>{
   const d=new Date(item.date+'T00:00:00');const days=Math.round((d-today)/86400000);
-  const card=document.createElement('div');card.className='card';card.style.cssText='display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px';
-  const info=document.createElement('div');const title=document.createElement('strong');title.textContent=item.title;const sub=document.createElement('div');sub.className='muted';sub.textContent=new Intl.DateTimeFormat('de-DE',{dateStyle:'medium'}).format(d)+' · '+(days<0?'Schon vorbei':days===0?'Heute!':`Noch ${days} Tage`);info.append(title,sub);
-  const del=document.createElement('button');del.className='action secondary';del.type='button';del.textContent='Löschen';del.onclick=()=>{if(confirm('Diesen Countdown löschen?')){localStorage.setItem(CUSTOM_COUNTDOWN_KEY,JSON.stringify(getCustomCountdowns().filter(x=>x.id!==item.id)));renderCustomCountdowns()}};
-  card.append(info,del);root.append(card);
+  const card=document.createElement('article');card.className='countdown-event-card';
+  const picture=document.createElement('div');picture.className='countdown-event-art';picture.style.background=art[index%art.length][1];picture.setAttribute('aria-hidden','true');picture.textContent=art[index%art.length][0];
+  const info=document.createElement('div');info.className='countdown-event-info';
+  const title=document.createElement('h4');title.textContent=item.title;
+  const date=document.createElement('div');date.className='countdown-event-date';date.textContent=new Intl.DateTimeFormat('de-DE',{weekday:'long',day:'numeric',month:'long',year:'numeric'}).format(d);
+  const count=document.createElement('div');count.className='countdown-days-left';
+  if(days<0){count.textContent='Schon vorbei';count.classList.add('countdown-past')}else if(days===0){count.textContent='🎉 Heute ist es so weit!';count.classList.add('countdown-today')}else{count.innerHTML='<strong>'+days+'</strong> '+(days===1?'Tag':'Tage')+' noch';}
+  info.append(title,date,count);
+  const del=document.createElement('button');del.className='countdown-delete';del.type='button';del.textContent='Löschen';del.setAttribute('aria-label','Countdown '+item.title+' löschen');del.onclick=()=>{if(confirm('Diesen Countdown löschen?')){localStorage.setItem(CUSTOM_COUNTDOWN_KEY,JSON.stringify(getCustomCountdowns().filter(x=>x.id!==item.id)));renderCustomCountdowns()}};
+  card.append(picture,info,del);root.append(card);
  });
 }
 $('customCountdownForm')?.addEventListener('submit',e=>{e.preventDefault();const title=$('customCountdownTitle').value.trim(),date=$('customCountdownDate').value;if(!title||!date)return;const items=getCustomCountdowns();items.push({id:Date.now().toString(),title,date});localStorage.setItem(CUSTOM_COUNTDOWN_KEY,JSON.stringify(items));$('customCountdownTitle').value='';$('customCountdownDate').value='';renderCustomCountdowns()});
@@ -900,6 +925,17 @@ renderCustomCountdowns();
   .dash-meal-day strong { display:block; font-size:clamp(10px,2.8vw,13px) !important; line-height:1.15; white-space:nowrap; }
   .dash-meal-day small { display:block; font-size:clamp(9px,2.4vw,11px) !important; line-height:1.2; }
 }
+</style>
+<style id="countdown-page-design">
+#page-countdowns{display:grid;gap:18px}
+.countdown-welcome{position:relative;display:flex;align-items:center;justify-content:space-between;gap:12px;overflow:hidden;min-height:190px;padding:clamp(20px,4vw,34px);border:1px solid #e5dfca;border-radius:24px;background:linear-gradient(115deg,#fff0d8 0%,#f7eddb 47%,#dfeadd 100%)}
+.countdown-welcome-copy{position:relative;z-index:2;max-width:65%}.countdown-welcome h2{font-size:clamp(1.6rem,4vw,2.25rem);margin:8px 0;color:#354e3b}.countdown-welcome p{margin:0;line-height:1.55;color:#5e6b5b}
+.countdown-illustration{position:absolute;right:0;top:0;width:39%;height:100%;pointer-events:none}.countdown-sun{position:absolute;right:24%;top:18px;font-size:45px}.countdown-cloud{position:absolute;right:5%;top:42px;font-size:48px;filter:drop-shadow(0 4px 2px #fff8)}.countdown-suitcase{position:absolute;right:15%;bottom:10px;font-size:clamp(62px,10vw,105px);filter:drop-shadow(0 7px 4px #6b755522);transform:rotate(-7deg)}.countdown-sparkle{position:absolute;right:60%;top:48%;font-size:27px;color:#c69b50}
+.countdown-create-card{padding:clamp(16px,3vw,24px);background:linear-gradient(145deg,#fffefa,#f7f6ed)}.countdown-form-heading{display:flex;align-items:center;gap:12px;margin-bottom:15px}.countdown-form-heading h3{margin:0 0 4px}.countdown-form-heading p{margin:0}.countdown-form-icon{display:grid;place-items:center;flex:0 0 48px;height:48px;border-radius:15px;background:#f6e7c8;font-size:25px}.countdown-form{display:grid;gap:8px}.countdown-form label{font-size:.9rem;font-weight:650;color:var(--ink);margin-top:4px}.countdown-form input{width:100%;box-sizing:border-box}.countdown-form .action{margin-top:8px;justify-self:start}
+.countdown-list-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:4px}.countdown-list-heading h3{margin:0 0 4px}.countdown-list-heading p{margin:0}.countdown-confetti{font-size:32px}
+.countdown-card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:13px}.countdown-event-card{display:flex;align-items:center;gap:13px;min-width:0;padding:14px;border:1px solid #e8e6dc;border-radius:19px;background:#fffefa;box-shadow:0 5px 16px #304c360a}.countdown-event-art{display:grid;place-items:center;flex:0 0 68px;height:78px;border-radius:16px;font-size:35px}.countdown-event-info{flex:1;min-width:0}.countdown-event-info h4{margin:0 0 5px;font-size:1.02rem;overflow-wrap:anywhere}.countdown-event-date{font-size:.82rem;color:var(--muted,#687568);line-height:1.4}.countdown-days-left{margin-top:8px;color:#476844;font-size:.92rem}.countdown-days-left strong{font-size:1.45rem;letter-spacing:-.04em}.countdown-days-left.countdown-today{font-weight:750;color:#a35c37}.countdown-days-left.countdown-past{color:#85877f;font-size:.85rem}.countdown-delete{align-self:flex-start;border:0;border-radius:10px;padding:7px 8px;background:#f6f2e9;color:#687064;font:inherit;font-size:.78rem;cursor:pointer}.countdown-delete:hover{background:#f2e1dd;color:#8c4d43}
+.countdown-empty{grid-column:1/-1;text-align:center;padding:28px 18px;border:1px dashed #d8dfd0;border-radius:20px;background:#fbfcf6}.countdown-empty-art{font-size:38px;margin-bottom:8px}.countdown-empty h3{margin:0 0 7px}.countdown-empty p{max-width:440px;margin:0 auto;line-height:1.5}.countdown-hint{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;border-radius:14px;background:#f0f3e9;color:#65715f;font-size:.85rem}.countdown-hint p{margin:0;line-height:1.5}
+@media(max-width:600px){.countdown-welcome{min-height:175px;padding:19px 16px}.countdown-welcome-copy{max-width:72%}.countdown-illustration{width:43%;opacity:.92}.countdown-sun{font-size:34px;right:20%}.countdown-cloud{font-size:36px;right:0}.countdown-suitcase{font-size:68px;right:8%}.countdown-event-card{gap:10px;padding:11px}.countdown-event-art{flex-basis:55px;height:64px;font-size:29px}.countdown-delete{font-size:.72rem;padding:6px}}
 </style>
 </body></html>
 
