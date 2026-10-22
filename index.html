@@ -282,6 +282,18 @@ header .brand-logo{width:clamp(76px,12vw,124px);height:clamp(76px,12vw,124px);fl
 .event-edit-panel input,.event-edit-panel select{width:100%;box-sizing:border-box}
 .event-edit-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
 @media(max-width:420px){.month-calendar{padding:9px}.month-day{min-height:46px;border-radius:8px}.month-daynum{font-size:.82rem}.month-grid{gap:3px}}
+
+/* Dashboard: alle heutigen Termine sichtbar und direkt anklickbar */
+.dash-calendar-timeline{align-items:stretch!important;display:block!important;min-height:0!important;padding-top:4px!important;padding-bottom:4px!important}
+#dashNextEvent{display:grid;gap:7px;width:100%;min-width:0}
+.dash-event-link{display:flex;align-items:center;gap:10px;text-align:left;width:100%;min-width:0;padding:9px 10px;border:1px solid rgba(89,100,85,.15);border-left:4px solid var(--event-color,#B6CDB5);border-radius:11px;background:rgba(255,255,255,.68);color:inherit;cursor:pointer;font:inherit;box-sizing:border-box;transition:transform .15s ease,background .15s ease}
+.dash-event-link:hover,.dash-event-link:focus-visible{background:#fff;transform:translateY(-1px);outline:2px solid rgba(89,100,85,.24);outline-offset:1px}
+.dash-event-time{flex:0 0 auto;min-width:54px;font-size:.78rem;font-weight:700;color:#596455}
+.dash-event-info{display:flex;flex-direction:column;gap:2px;min-width:0;overflow-wrap:anywhere}
+.dash-event-info strong{font-size:.9rem;line-height:1.25}
+.dash-event-info small{font-size:.74rem;color:#66715f}
+.dash-agenda-label{font-size:.8rem;color:#596455;font-weight:650;margin:0 0 2px}
+
 </style>
 </head>
 <body>
@@ -494,8 +506,23 @@ function updateSmartDashboard(){
  if(focusEl){const overdue=tasks.filter(t=>!t.is_done&&t.due_date&&t.due_date<today);const due=tasks.filter(t=>!t.is_done&&t.due_date===today);const open=tasks.filter(t=>!t.is_done);if(overdue.length)focusEl.textContent='🎯 Tagesfokus: '+overdue.length+' überfällige Aufgabe'+(overdue.length===1?'':'n')+' zuerst prüfen.';else if(due.length)focusEl.textContent='🎯 Tagesfokus: '+due.length+' Aufgabe'+(due.length===1?'':'n')+' ist heute fällig.';else if(open.length)focusEl.textContent='🌿 Tagesfokus: Du hast '+open.length+' offene Aufgabe'+(open.length===1?'':'n')+'. Such dir eine kleine Priorität aus.';else focusEl.textContent='✨ Tagesfokus: Keine offenen Aufgaben mit Fälligkeit erkannt. Zeit für das, was dir wichtig ist!';}
  const eventEl=$('dashNextEvent');
  if(eventEl){
-  const next=[...events].filter(e=>e.event_date>=today).sort((a,b)=>(a.event_date+(a.event_time||'')).localeCompare(b.event_date+(b.event_time||'')))[0];
-  eventEl.textContent=next?(next.event_date===today?'Heute':' '+new Date(next.event_date+'T12:00:00').toLocaleDateString('de-DE',{weekday:'short',day:'2-digit',month:'short'}))+(next.event_time?' · '+String(next.event_time).slice(0,5):'')+' – '+next.title:'Keine Termine geplant';
+  const todays=[...events].filter(e=>e.event_date===today).sort((a,b)=>String(a.event_time||'').localeCompare(String(b.event_time||'')));
+  const upcoming=[...events].filter(e=>e.event_date>today).sort((a,b)=>(a.event_date+(a.event_time||'')).localeCompare(b.event_date+(b.event_time||'')));
+  eventEl.innerHTML='';
+  const list=todays.length? todays:upcoming.slice(0,3);
+  if(!list.length){const empty=document.createElement('div');empty.className='muted';empty.textContent='Keine Termine geplant';eventEl.append(empty)}
+  else {
+   if(!todays.length){const label=document.createElement('div');label.className='dash-agenda-label';label.textContent='Deine nächsten Termine';eventEl.append(label)}
+   list.forEach(e=>{
+    const b=document.createElement('button');b.type='button';b.className='dash-event-link';b.style.setProperty('--event-color',eventColors[eventCategory(e)]||'#B6CDB5');
+    const time=document.createElement('span');time.className='dash-event-time';time.textContent=(todays.length?'':new Date(e.event_date+'T12:00:00').toLocaleDateString('de-DE',{weekday:'short',day:'2-digit',month:'short'})+' · ')+(e.event_time?String(e.event_time).slice(0,5):'—');
+    const title=document.createElement('strong');title.textContent=e.title||'Termin';
+    const cat=document.createElement('small');cat.textContent=eventCategory(e);
+    const info=document.createElement('span');info.className='dash-event-info';info.append(title,cat);b.append(time,info);
+    b.addEventListener('click',()=>{selectedCalendarDate=e.event_date;showPage('events');renderMonth();renderDayAgenda();editEvent(e)});
+    eventEl.append(b);
+   });
+  }
  }
  const shopEl=$('dashShopping');if(shopEl){const n=shoppingItems.filter(x=>!x.is_done).length;shopEl.textContent=n===0?'Alles erledigt ✓':n+' Artikel auf der Liste'}
  const mealEl=$('dashMeal');if(mealEl){
