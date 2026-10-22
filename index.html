@@ -333,7 +333,7 @@ header .brand-logo{width:clamp(76px,12vw,124px);height:clamp(76px,12vw,124px);fl
 </div>
 </div>
 <div id="page-tasks" class="hidden"><h2>Aufgaben</h2><p class="muted">Diese Liste wird mit Supabase zwischen deinen Geräten synchronisiert.</p>
-<form id="taskForm"><input id="taskTitle" placeholder="Was möchtest du erledigen?" maxlength="180" required><div class="row"><select id="taskCategory"><option>Privat</option><option>Beruflich</option></select><input id="taskDue" type="date"></div><button class="action" type="submit">＋ Aufgabe speichern</button></form><div id="taskList"></div></div>
+<form id="taskForm"><input id="taskTitle" placeholder="Was möchtest du erledigen?" maxlength="180" required><div class="row"><select id="taskCategory"><option>Privat</option><option>Beruflich</option></select><input id="taskDue" type="date"></div><button class="action" type="submit">＋ Aufgabe speichern</button></form><div class="row" style="gap:8px;flex-wrap:wrap;margin:12px 0"><label for="taskFilter" class="muted">Anzeigen</label><select id="taskFilter"><option value="all">Alle Aufgaben</option><option value="today">Heute fällig</option><option value="upcoming">Demnächst</option><option value="done">Erledigt</option></select></div><div id="taskList"></div></div>
 <div id="page-events" class="hidden"><h2>📅 Dein Wochenplan</h2><p class="muted">Eine ruhige Übersicht für deine Woche – heute ist besonders markiert.  Termine werden mit deinem Konto auf deinen Geräten synchronisiert.</p>
 <div class="calendar-intro"><span class="muted">Tippe auf einen Tag für deine Agenda – tippe auf einen Termin zum Bearbeiten.</span><button class="action" id="newCalendarEvent" type="button">＋ Neuer Termin</button></div><div class="calendar-legend" aria-label="Farben der Terminkategorien"><div class="calendar-legend-item"><i class="calendar-legend-dot" style="background:#F4C6A5"></i>Privat</div><div class="calendar-legend-item"><i class="calendar-legend-dot" style="background:#B9D7F0"></i>Schule</div><div class="calendar-legend-item"><i class="calendar-legend-dot" style="background:#B6CDB5"></i>Volleyball</div><div class="calendar-legend-item"><i class="calendar-legend-dot" style="background:#EFA8C9"></i>Gesa</div><div class="calendar-legend-item"><i class="calendar-legend-dot" style="background:#C9B5E8"></i>Lene</div><div class="calendar-legend-item"><i class="calendar-legend-dot" style="background:#F5E59A"></i>Franzi</div><div class="calendar-legend-item"><i class="calendar-legend-dot" style="background:#E9A59B"></i>Sonstiges</div></div><div class="month-calendar"><div class="month-head"><button class="action secondary" id="prevWeek" type="button" aria-label="Voriger Monat">←</button><strong id="weekLabel">Monat</strong><button class="action secondary" id="nextWeek" type="button" aria-label="Nächster Monat">→</button></div><div id="monthGrid" class="month-grid" aria-label="Monatskalender"></div></div>
 <div class="card" style="padding:14px;margin:12px 0"><h3 id="agendaHeading" style="margin:0 0 8px">Tagesagenda</h3><div id="dayAgenda"><p class="muted">Wähle einen Tag im Kalender.</p></div></div>
@@ -344,7 +344,7 @@ header .brand-logo{width:clamp(76px,12vw,124px);height:clamp(76px,12vw,124px);fl
 <div style="margin:10px 0;padding:12px;border:1px solid #e4e8dc;border-radius:14px;background:#f8f7ef"><label for="eventRepeat">Wiederholung</label><select id="eventRepeat" style="width:100%"><option value="none">Einmalig (Standard)</option><option value="weekly">Wöchentlich</option><option value="monthly">Monatlich</option></select><div id="repeatDaysWrap" class="hidden" style="margin-top:10px"><span class="muted">Wochentage auswählen</span><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"><label style="display:flex;gap:4px;align-items:center"><input type="checkbox" name="repeatDay" value="0">Mo</label><label style="display:flex;gap:4px;align-items:center"><input type="checkbox" name="repeatDay" value="1">Di</label><label style="display:flex;gap:4px;align-items:center"><input type="checkbox" name="repeatDay" value="2">Mi</label><label style="display:flex;gap:4px;align-items:center"><input type="checkbox" name="repeatDay" value="3">Do</label><label style="display:flex;gap:4px;align-items:center"><input type="checkbox" name="repeatDay" value="4">Fr</label><label style="display:flex;gap:4px;align-items:center"><input type="checkbox" name="repeatDay" value="5">Sa</label><label style="display:flex;gap:4px;align-items:center"><input type="checkbox" name="repeatDay" value="6">So</label></div></div><p class="muted" style="margin:8px 0 0">Wiederholungen werden als einzelne Termine für bis zu 12 Monate angelegt.</p></div><div class="event-edit-actions"><button class="action" type="submit">Speichern</button><button class="action secondary" id="cancelEventEdit" type="button">Abbrechen</button><button class="action secondary" id="deleteCurrentEvent" type="button" style="display:none">Termin löschen</button></div></form></div></div>
 <div id="page-shopping" class="hidden"><h2>Einkaufsliste</h2><p class="muted">Die Einkaufsliste wird mit deinem Konto auf deinen Geräten synchronisiert.</p><form id="shoppingForm"><input id="shoppingTitle" placeholder="Artikel hinzufügen" maxlength="180" required><button class="action">＋ Hinzufügen</button></form><div id="shoppingList"></div></div>
 <div id="page-notes" class="hidden"><h2>📝 Notizen</h2><p class="muted">Persönliche Notizen, die mit deinem Konto auf PC und Handy synchronisiert werden.</p>
-<form id="noteForm"><label for="noteCategory">Kategorie</label><select id="noteCategory" required><option value="Privat">🏡 Privat</option><option value="Schule">📚 Schule</option><option value="Volleyball">🏐 Volleyball</option><option value="Sonstiges">📌 Sonstiges</option></select><input id="noteTitle" placeholder="Titel der Notiz" maxlength="180" required><textarea id="noteContent" placeholder="Was möchtest du festhalten?" rows="4" maxlength="10000" style="width:100%;resize:vertical;border:1px solid #d8dfd3;border-radius:12px;padding:12px;font:inherit;background:#fffefa;color:var(--ink)"></textarea><button class="action" type="submit">＋ Notiz speichern</button></form><div class="note-category-tabs" role="tablist" aria-label="Notizkategorie" style="display:flex;gap:8px;flex-wrap:wrap;margin:16px 0"><button type="button" class="action secondary note-filter active" data-category="Alle">Alle</button><button type="button" class="action secondary note-filter" data-category="Privat">🏡 Privat</button><button type="button" class="action secondary note-filter" data-category="Schule">📚 Schule</button><button type="button" class="action secondary note-filter" data-category="Volleyball">🏐 Volleyball</button><button type="button" class="action secondary note-filter" data-category="Sonstiges">📌 Sonstiges</button></div><div id="notesList"></div></div>
+<form id="noteForm"><label for="noteCategory">Kategorie</label><select id="noteCategory" required><option value="Privat">🏡 Privat</option><option value="Schule">📚 Schule</option><option value="Volleyball">🏐 Volleyball</option><option value="Sonstiges">📌 Sonstiges</option></select><input id="noteTitle" placeholder="Titel der Notiz" maxlength="180" required><textarea id="noteContent" placeholder="Was möchtest du festhalten?" rows="4" maxlength="10000" style="width:100%;resize:vertical;border:1px solid #d8dfd3;border-radius:12px;padding:12px;font:inherit;background:#fffefa;color:var(--ink)"></textarea><button class="action" type="submit">＋ Notiz speichern</button></form><label for="noteSearch" class="muted">Notizen durchsuchen</label><input id="noteSearch" type="search" placeholder="🔎 Titel oder Inhalt suchen …" style="width:100%;margin:6px 0 12px"><div class="note-category-tabs" role="tablist" aria-label="Notizkategorie" style="display:flex;gap:8px;flex-wrap:wrap;margin:16px 0"><button type="button" class="action secondary note-filter active" data-category="Alle">Alle</button><button type="button" class="action secondary note-filter" data-category="Privat">🏡 Privat</button><button type="button" class="action secondary note-filter" data-category="Schule">📚 Schule</button><button type="button" class="action secondary note-filter" data-category="Volleyball">🏐 Volleyball</button><button type="button" class="action secondary note-filter" data-category="Sonstiges">📌 Sonstiges</button></div><div id="notesList"></div></div>
 <div id="page-football" class="hidden"><div class="sport-banner" id="footballSportBanner"><span class="sport-ball">⚽</span><img id="footballTeamLogo" class="frogs-logo" style="width:76px;height:76px;object-fit:contain;background:#fffdf6;padding:5px;border-radius:14px" src="https://commons.wikimedia.org/wiki/Special:FilePath/Borussia_Dortmund_logo.svg" alt="Original-Logo Borussia Dortmund"><div><h3 id="footballBannerTitle">Fußball · Borussia Dortmund</h3><p>Spiele, Ergebnisse und Tabellen deiner Lieblingsvereine</p></div></div><h2>⚽ Fußball</h2><p class="muted">Wähle deinen Verein und öffne Spielplan, Ergebnisse oder Tabelle. Öffne Live-Spielstände, Spielpläne und Ergebnisse bei Sportschau Live & Ergebnisse.</p>
 <label for="footballTeam" class="muted">Verein auswählen</label><select id="footballTeam" style="width:100%;margin:6px 0 14px"><option value="bvb">Borussia Dortmund</option><option value="h96">Hannover 96</option><option value="havelse">TSV Havelse</option></select>
 <div class="row sport-tabs" id="footballTabs"><button class="action" data-sporttab="schedule">📅 Spielplan</button><button class="action secondary" data-sporttab="results">🏁 Ergebnisse</button><button class="action secondary" data-sporttab="table">📊 Tabelle</button></div><div id="footballContent" class="grid"></div><p class="muted">Hinweis: Die App speichert keine externen Sportdaten und benötigt keine API-Schlüssel. Aktuelle Fußball-Spielstände und Ergebnisse öffnest du bei Sportschau Live & Ergebnisse; Volleyballtermine bleiben bei NWVV/SAMS. Dafür ist eine Internetverbindung nötig.</p></div>
@@ -417,7 +417,7 @@ header .brand-logo{width:clamp(76px,12vw,124px);height:clamp(76px,12vw,124px);fl
   <label for="holidayYear" class="muted">Jahr anzeigen</label>
   <select id="holidayYear"><option value="2026">2026</option><option value="2027">2027</option><option value="2028">2028</option><option value="2029">2029</option><option value="2030">2030</option></select>
  </div>
- <div id="holidayCountdownList" class="grid" style="margin-top:12px"></div>
+ <div id="holidayCountdownList" class="grid" style="margin-top:12px"></div><section class="card" style="margin-top:20px"><h3>✨ Eigene Countdowns</h3><p class="muted">Geburtstage, Urlaub oder besondere Tage hinzufügen.</p><form id="customCountdownForm"><input id="customCountdownTitle" placeholder="Worauf freust du dich?" maxlength="100" required><label for="customCountdownDate" class="muted">Datum</label><input id="customCountdownDate" type="date" required><button class="action" type="submit">＋ Countdown hinzufügen</button></form><div id="customCountdownList" style="display:grid;gap:10px;margin-top:12px"></div></section>
  <p class="muted" style="margin-top:16px">Quelle der Ferientermine: Niedersächsisches Kultusministerium. Individuelle bewegliche Ferientage einzelner Schulen können abweichen.</p>
  <p><a href="https://www.mk.niedersachsen.de/startseite/service/ferientermine/schulferien-und-religiose-feiertage-6491.html" target="_blank" rel="noopener">Offizielle Ferienübersicht Niedersachsen ↗</a></p>
 </div>
@@ -443,8 +443,10 @@ document.querySelectorAll('#nav button').forEach(b=>b.addEventListener('click',(
 async function loadTasks(){if(!sb||!currentUser)return;status('syncStatus','Synchronisiere …');const {data,error}=await sb.from('tasks').select('*').order('created_at',{ascending:false});if(error){status('syncStatus','Synchronisierung fehlgeschlagen: '+error.message,true);return}tasks=data||[];renderTasks();renderMonth();renderDayAgenda();updateCounts();status('syncStatus','Synchronisiert ✓')}
 function renderTasks(){
  const root=$('taskList');root.innerHTML='';
- if(!tasks.length){root.innerHTML='<div class="empty">Noch keine Aufgaben. Füge oben deine erste Aufgabe hinzu.</div>';return}
- for(const t of tasks){
+ const filter=$('taskFilter')?.value||'all';const today=localDateString(new Date());
+ const visibleTasks=tasks.filter(t=>filter==='all'||(filter==='today'&&!t.is_done&&t.due_date===today)||(filter==='upcoming'&&!t.is_done&&t.due_date&&t.due_date>today)||(filter==='done'&&t.is_done));
+ if(!visibleTasks.length){root.innerHTML='<div class="empty">Noch keine Aufgaben. Füge oben deine erste Aufgabe hinzu.</div>';return}
+ for(const t of visibleTasks){
   const row=document.createElement('div');row.className='item';
   const check=document.createElement('input');check.type='checkbox';check.checked=t.is_done;check.setAttribute('aria-label','Erledigt');check.addEventListener('change',()=>updateTask(t.id,{is_done:check.checked}));
   const text=document.createElement('div');text.className='grow';
@@ -454,6 +456,7 @@ function renderTasks(){
   const del=document.createElement('button');del.className='delete';del.textContent='Löschen';del.addEventListener('click',()=>deleteTask(t.id));row.append(check,text,edit,del);root.append(row)
  }
 }
+$('taskFilter')?.addEventListener('change',renderTasks);
 function editTaskInline(t,row){
  row.innerHTML='';row.style.display='grid';row.style.gap='8px';
  const title=document.createElement('input');title.value=t.title;title.maxLength=180;title.placeholder='Aufgabe';
@@ -621,14 +624,14 @@ async function loadNotes(){
  if(error){status('syncStatus','Notizen konnten nicht geladen werden: '+error.message,true);return}
  notes=data||[];renderNotes();
 }
-let activeNoteCategory='Alle';
+let activeNoteCategory='Alle';\nlet noteSearchTerm='';\n$('noteSearch')?.addEventListener('input',e=>{noteSearchTerm=e.target.value.trim().toLocaleLowerCase('de');renderNotes()});
 function noteCategoryOf(note){const m=(note.content||'').match(/^\[Kategorie:(Privat|Schule|Volleyball|Sonstiges)\]\n/);return m?m[1]:'Privat'}
 function noteTextOf(note){return (note.content||'').replace(/^\[Kategorie:(Privat|Schule|Volleyball|Sonstiges)\]\n/,'')}
 document.querySelectorAll('.note-filter').forEach(btn=>btn.addEventListener('click',()=>{activeNoteCategory=btn.dataset.category;document.querySelectorAll('.note-filter').forEach(b=>b.classList.toggle('active',b===btn));renderNotes()}));
 function renderNotes(){
  const root=$('notesList');if(!root)return;root.innerHTML='';
- const shown=notes.filter(n=>activeNoteCategory==='Alle'||noteCategoryOf(n)===activeNoteCategory);
- if(!shown.length){root.innerHTML='<div class="empty">'+(notes.length?'In dieser Kategorie gibt es noch keine Notizen.':'Noch keine Notizen. Schreibe oben deine erste Notiz.')+'</div>';return}
+ const shown=notes.filter(n=>(activeNoteCategory==='Alle'||noteCategoryOf(n)===activeNoteCategory)&&(!noteSearchTerm||String(n.title||'').toLocaleLowerCase('de').includes(noteSearchTerm)||String(n.content||'').toLocaleLowerCase('de').includes(noteSearchTerm)));
+ if(!shown.length){root.innerHTML='<div class="empty">'+(noteSearchTerm?'Keine passenden Notizen gefunden.':notes.length?'In dieser Kategorie gibt es noch keine Notizen.':'Noch keine Notizen. Schreibe oben deine erste Notiz.')+'</div>';return}
  const groups=['Privat','Schule','Volleyball','Sonstiges'];
  groups.filter(cat=>activeNoteCategory==='Alle'||cat===activeNoteCategory).forEach(cat=>{
   const group=shown.filter(n=>noteCategoryOf(n)===cat);if(!group.length)return;
@@ -866,6 +869,25 @@ $('weatherForm').addEventListener('submit',e=>{e.preventDefault();loadWeather(tr
 // Wetter erscheint schon beim Öffnen des Dashboards; Aktualisierung erfolgt automatisch alle 15 Minuten.
 loadWeather();setInterval(()=>{if(!document.hidden)loadWeather(true)},15*60*1000);document.addEventListener('visibilitychange',()=>{if(!document.hidden&&Date.now()-weatherLastLoaded>15*60*1000)loadWeather(true)});
 if('serviceWorker' in navigator && location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js').catch(()=>{});
+
+// Eigene Countdowns: werden lokal auf diesem Gerät gespeichert.
+const CUSTOM_COUNTDOWN_KEY='meinAlltagCustomCountdownsV1';
+function getCustomCountdowns(){try{return JSON.parse(localStorage.getItem(CUSTOM_COUNTDOWN_KEY)||'[]')}catch{return []}}
+function renderCustomCountdowns(){
+ const root=$('customCountdownList');if(!root)return;root.innerHTML='';
+ const items=getCustomCountdowns().sort((a,b)=>a.date.localeCompare(b.date));
+ if(!items.length){root.innerHTML='<p class="muted">Noch keine eigenen Countdowns.</p>';return}
+ const today=new Date();today.setHours(0,0,0,0);
+ items.forEach(item=>{
+  const d=new Date(item.date+'T00:00:00');const days=Math.round((d-today)/86400000);
+  const card=document.createElement('div');card.className='card';card.style.cssText='display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px';
+  const info=document.createElement('div');const title=document.createElement('strong');title.textContent=item.title;const sub=document.createElement('div');sub.className='muted';sub.textContent=new Intl.DateTimeFormat('de-DE',{dateStyle:'medium'}).format(d)+' · '+(days<0?'Schon vorbei':days===0?'Heute!':`Noch ${days} Tage`);info.append(title,sub);
+  const del=document.createElement('button');del.className='action secondary';del.type='button';del.textContent='Löschen';del.onclick=()=>{if(confirm('Diesen Countdown löschen?')){localStorage.setItem(CUSTOM_COUNTDOWN_KEY,JSON.stringify(getCustomCountdowns().filter(x=>x.id!==item.id)));renderCustomCountdowns()}};
+  card.append(info,del);root.append(card);
+ });
+}
+$('customCountdownForm')?.addEventListener('submit',e=>{e.preventDefault();const title=$('customCountdownTitle').value.trim(),date=$('customCountdownDate').value;if(!title||!date)return;const items=getCustomCountdowns();items.push({id:Date.now().toString(),title,date});localStorage.setItem(CUSTOM_COUNTDOWN_KEY,JSON.stringify(items));$('customCountdownTitle').value='';$('customCountdownDate').value='';renderCustomCountdowns()});
+renderCustomCountdowns();
 </script>
 
 <style id="meal-days-no-scroll-mobile">
