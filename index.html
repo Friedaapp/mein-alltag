@@ -1315,3 +1315,17 @@ hr{border:0;border-top:1px solid var(--line)}
  updateWeekendCountdown();window.setInterval(updateWeekendCountdown,30000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)updateWeekendCountdown();});window.addEventListener('focus',updateWeekendCountdown);
 })();
 </script>
+
+<style id="dashboard-weather-match-countdown-height">
+/* Wetterkarte und Wochenend-Countdown sollen exakt gleich hoch abschließen. */
+.dashboard-top-widgets{grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;align-items:stretch!important;}
+.dashboard-top-widgets .dashboard-title-compact{display:flex!important;align-items:stretch!important;justify-content:stretch!important;align-self:stretch!important;height:100%;min-height:0;}
+.dashboard-top-widgets .weather-chip{display:flex!important;align-items:center!important;align-self:stretch!important;width:100%!important;max-width:none!important;height:100%!important;min-height:0!important;box-sizing:border-box!important;}
+.dashboard-top-widgets .weekend-countdown-card{height:100%;min-height:100%;box-sizing:border-box!important;}
+@media(max-width:600px){
+ .dashboard-top-widgets{grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;align-items:stretch!important;}
+ .dashboard-top-widgets .dashboard-title-compact{height:100%;align-self:stretch!important;}
+ .dashboard-top-widgets .weather-chip{height:100%!important;max-width:none!important;padding:9px!important;}
+ .dashboard-top-widgets .weekend-countdown-card{height:100%;min-height:100%;}
+}
+</style>
