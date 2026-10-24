@@ -403,6 +403,7 @@ header .brand-logo{width:clamp(76px,12vw,124px);height:clamp(76px,12vw,124px);fl
 </section>
 <section class="panel hidden" id="app">
 <div id="page-today">
+<div class="dashboard-top-widgets">
 <div class="dashboard-title-row dashboard-title-compact"><button class="weather-chip" type="button" onclick="showPage('weather')" aria-label="Aktuelles Wetter in Lohnde öffnen"><span id="topWeatherIcon" class="weather-chip-icon">🌤️</span><span><strong id="topWeatherTemp">--°</strong><small id="topWeatherDesc">Wetter lädt …</small></span></button></div>
 <section id="weekendCountdownCard" class="weekend-countdown-card" aria-live="polite" aria-atomic="true">
   <div class="weekend-countdown-top"><span id="weekendCountdownIcon" aria-hidden="true">🌿</span><span id="weekendCountdownEyebrow">Deine Woche</span><span id="weekendCountdownPercent">0 %</span></div>
@@ -411,6 +412,7 @@ header .brand-logo{width:clamp(76px,12vw,124px);height:clamp(76px,12vw,124px);fl
   <div class="weekend-countdown-track" role="progressbar" aria-label="Fortschritt bis zum Wochenende" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="weekendCountdownProgress"><div id="weekendCountdownFill"></div></div>
   <div class="weekend-countdown-bottom"><span id="weekendCountdownStart">Montag</span><strong id="weekendCountdownRemaining">–</strong><span>Freitag · 13:00</span></div>
 </section>
+</div>
 <div class="card home-card home-card-wide daily-focus"><span class="section-kicker">✨ Dein Tagesüberblick</span><div id="dashPriority" class="dashboard-priority" role="status">Dein Tagesfokus wird vorbereitet …</div><div class="daily-focus-grid"><div class="dash-calendar-card"><div class="dash-calendar-heading"><span class="dash-art-icon" aria-hidden="true">📅</span><strong>Heute im Kalender</strong></div><div class="dash-calendar-timeline"><span class="dash-timeline-dot" aria-hidden="true"></span><div id="dashNextEvent" class="muted">Wird geladen …</div></div><button class="text-action" type="button" onclick="showPage('events')">Alle Termine ↗</button></div><div class="dash-meal-card"><div class="dash-meal-head"><span class="dash-art-icon" aria-hidden="true">🍲</span><strong>Essensplan</strong><button class="dash-week-button" type="button" onclick="showPage('mealplan')">Zur Woche ›</button></div><div id="dashMeal" class="dash-meal-feature">Noch kein Essen eingetragen</div><div id="dashMealDays" class="dash-meal-days" aria-label="Essen für Wochentag auswählen"></div></div><div class="dash-holiday-card"><span class="holiday-sun">☀️</span><span class="holiday-eyebrow">🏖️ Darauf freuen wir uns</span><strong>Nächste Ferien</strong><div id="dashHoliday" class="muted">Countdown ansehen</div><div id="dashHolidayProgress" class="holiday-progress dash-holiday-progress"><div style="width:0%"></div></div><button class="text-action" type="button" onclick="showPage('holidays')">Zur Ferienübersicht ↗</button></div><div class="dash-shopping-card"><span class="dash-art-icon" aria-hidden="true">🛒</span><strong>Einkauf offen</strong><div id="dashShopping" class="muted">–</div><button class="text-action" type="button" onclick="showPage('shopping')">Einkauf öffnen ↗</button></div></div></div><div class="card home-card home-card-wide commute-quick" style="border:2px solid var(--accent);box-shadow:0 4px 18px rgba(66,99,63,.10)"><span class="section-kicker">🚆🚗 Schnellzugriff · Arbeitsweg</span><h3 style="margin:4px 0">Direkt los</h3><p class="muted">Bahnabfahrten oder Verkehr nach Stadthagen – mit einem Tippen erreichbar.</p><div class="commute-actions"><a class="action" href="https://www.bahnhof.de/dedensen-guemmer" target="_blank" rel="noopener">🚆 Live-Abfahrten</a><a class="action secondary" href="https://www.google.com/maps/dir/?api=1&amp;origin=Heideweg%207f%2C%20Seelze-Lohnde%2C%20Deutschland&amp;destination=Schachtstra%C3%9Fe%2053b%2C%20Stadthagen%2C%20Deutschland&amp;travelmode=driving" target="_blank" rel="noopener">🚗 Autofahrt starten</a><button class="action secondary" type="button" onclick="showPage('commute')">Alle Verbindungen ↗</button></div></div><div class="home-grid">
  <div class="card home-card"><span class="section-kicker">Wetter in Lohnde</span><div class="home-big" id="homeWeatherValue">🌤️</div><div class="muted" id="homeWeatherText">Aktuelle Vorhersage ansehen</div><button class="action secondary" type="button" onclick="showPage('weather')">Wetter öffnen ↗</button></div>
  <div class="card home-card"><span class="section-kicker">Aufgaben offen</span><div class="home-big" id="todayOpen">–</div><div class="muted">Private und berufliche Aufgaben</div><button class="action secondary" type="button" onclick="showPage('tasks')">Aufgaben öffnen ↗</button></div>
@@ -1070,6 +1072,38 @@ renderCustomCountdowns();
 .dash-week-button{margin-left:auto!important;}
 @media(min-width:700px){.daily-focus-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;}}
 @media(max-width:600px){.daily-focus{padding:14px!important}.daily-focus-grid{grid-template-columns:minmax(0,1fr)!important;gap:14px!important}.daily-focus-grid > div{grid-column:1/-1!important}.dash-calendar-card,.dash-meal-card{min-height:0!important;height:auto!important}.dash-calendar-heading .dash-art-icon{font-size:27px!important}.dash-meal-days{gap:4px!important}.dash-meal-days>*{padding-left:2px!important;padding-right:2px!important;font-size:12px!important}}
+</style>
+
+<style id="dashboard-weather-weekend-inline">
+/* Wetter und Wochenend-Countdown teilen sich eine kompakte Zeile; bestehende Dashboard-Karten bleiben unangetastet. */
+.dashboard-top-widgets{display:flex;align-items:stretch;justify-content:flex-end;gap:10px;margin:0 0 12px;min-width:0}
+.dashboard-top-widgets .dashboard-title-compact{flex:0 0 auto;align-self:flex-start;margin:0!important;min-height:0}
+.dashboard-top-widgets .weekend-countdown-card{flex:1 1 260px;min-width:0;max-width:430px;margin:0;padding:10px 13px;border-radius:15px}
+.dashboard-top-widgets .weekend-countdown-card:after{font-size:34px;right:5px;bottom:-10px}
+.dashboard-top-widgets .weekend-countdown-top{gap:5px;font-size:.7rem}
+.dashboard-top-widgets .weekend-countdown-top #weekendCountdownIcon{font-size:1rem}
+.dashboard-top-widgets .weekend-countdown-top #weekendCountdownPercent{padding:2px 6px;font-size:.7rem}
+.dashboard-top-widgets .weekend-countdown-card h2{font-size:1rem;margin:5px 0 3px;letter-spacing:-.01em}
+.dashboard-top-widgets .weekend-countdown-card p{font-size:.73rem;line-height:1.25;margin:0 0 7px}
+.dashboard-top-widgets .weekend-countdown-track{height:6px}
+.dashboard-top-widgets .weekend-countdown-bottom{margin-top:5px;gap:4px;font-size:.62rem}
+.dashboard-top-widgets .weekend-countdown-bottom strong{font-size:.68rem}
+@media(max-width:600px){
+ .dashboard-top-widgets{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:start;gap:7px;margin-bottom:10px}
+ .dashboard-top-widgets .dashboard-title-compact{justify-content:flex-start;min-width:0}
+ .dashboard-top-widgets .weather-chip{max-width:145px;gap:6px;padding:7px 8px;border-radius:12px}
+ .dashboard-top-widgets .weather-chip .weather-chip-icon{font-size:1.25rem}
+ .dashboard-top-widgets .weather-chip strong{font-size:.9rem}
+ .dashboard-top-widgets .weather-chip small{font-size:.66rem;line-height:1.15}
+ .dashboard-top-widgets .weekend-countdown-card{width:100%;max-width:none;padding:9px 9px;border-radius:13px}
+ .dashboard-top-widgets .weekend-countdown-top{font-size:.62rem;gap:4px}
+ .dashboard-top-widgets .weekend-countdown-top #weekendCountdownPercent{font-size:.62rem;padding:2px 5px}
+ .dashboard-top-widgets .weekend-countdown-card h2{font-size:.82rem;line-height:1.15;margin:5px 0 4px}
+ .dashboard-top-widgets .weekend-countdown-card p{font-size:.66rem;line-height:1.2;margin-bottom:6px}
+ .dashboard-top-widgets .weekend-countdown-bottom{font-size:.55rem;gap:2px;margin-top:5px}
+ .dashboard-top-widgets .weekend-countdown-bottom strong{font-size:.6rem}
+}
+@media(max-width:370px){.dashboard-top-widgets{grid-template-columns: minmax(95px,.75fr) minmax(0,1.25fr);gap:5px}.dashboard-top-widgets .weather-chip{padding:6px;gap:4px}.dashboard-top-widgets .weekend-countdown-card p{font-size:.61rem}}
 </style>
 </body></html>
 
