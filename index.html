@@ -372,6 +372,41 @@ header .brand-logo{width:clamp(76px,12vw,124px);height:clamp(76px,12vw,124px);fl
   .daily-focus-grid .dash-meal-day { min-width:0 !important; width:auto !important; flex:none !important; padding:8px 1px !important; }
 }
 </style>
+
+<style id="weather-card-mobile-polish">
+/* Mobile: fill the weather card with a clearer visual hierarchy while matching the weekend card height. */
+@media (max-width: 600px) {
+  .dashboard-top-widgets .dashboard-title-compact { display:flex !important; align-items:stretch !important; }
+  .dashboard-top-widgets .weather-chip {
+    position:relative; overflow:hidden; isolation:isolate;
+    display:grid !important; grid-template-columns:minmax(0,1fr) !important;
+    grid-template-rows:auto auto auto; justify-items:center; align-content:center;
+    text-align:center; gap:4px !important; padding:10px 8px !important;
+    min-height:100% !important; height:100% !important;
+    background:linear-gradient(145deg,rgba(255,255,255,.98),rgba(224,244,236,.96)) !important;
+    border:1px solid rgba(133,183,157,.48) !important;
+    box-shadow:0 8px 22px rgba(24,84,60,.09), inset 0 1px 0 rgba(255,255,255,.9) !important;
+  }
+  .dashboard-top-widgets .weather-chip::before {
+    content:""; position:absolute; z-index:-1; width:100px; height:100px;
+    top:-42px; right:-30px; border-radius:50%;
+    background:radial-gradient(circle,rgba(255,218,130,.42),rgba(255,218,130,0) 70%);
+    pointer-events:none;
+  }
+  .dashboard-top-widgets .weather-chip .weather-chip-icon {
+    display:block; font-size:clamp(2.5rem,12vw,3.4rem) !important;
+    line-height:1.05; filter:drop-shadow(0 3px 4px rgba(47,75,54,.13));
+  }
+  .dashboard-top-widgets .weather-chip strong {
+    display:block; font-size:clamp(1.15rem,5.2vw,1.5rem) !important;
+    line-height:1.05; letter-spacing:-.04em; font-weight:800;
+  }
+  .dashboard-top-widgets .weather-chip small {
+    display:block; font-size:.7rem !important; line-height:1.2;
+    max-width:100%; overflow-wrap:anywhere; color:#52685a !important;
+  }
+}
+</style>
 </head>
 <body>
 <header><div class="brand-row"><div class="brand-left"><button class="brand-logo-button" type="button" onclick="openJokeOfDay()" aria-label="Witz des Tages öffnen" title="Witz des Tages"><img class="brand-logo" src="./mein-alltag-icon.svg" alt="Mein Alltag Logo"></button></div><div class="header-art" aria-label="Schnellzugriffe auf Vereine und Arbeitsweg"><div class="header-link-row header-sport-row" aria-label="Vereinsseiten"><a href="#football" class="header-club-link" onclick="openFootballTeam('bvb');return false" aria-label="Borussia Dortmund in der Fußball-App öffnen" title="Borussia Dortmund – Fußballseite öffnen"><img class="club-logo" src="https://commons.wikimedia.org/wiki/Special:FilePath/Borussia_Dortmund_logo.svg" alt="Borussia Dortmund"></a><a href="#football" class="header-club-link" onclick="openFootballTeam('h96');return false" aria-label="Hannover 96 in der Fußball-App öffnen" title="Hannover 96 – Fußballseite öffnen"><img class="club-logo" src="https://commons.wikimedia.org/wiki/Special:FilePath/Hannover_96_Logo.svg" alt="Hannover 96"></a><a href="#football" class="header-club-link" onclick="openFootballTeam('havelse');return false" aria-label="TSV Havelse in der Fußball-App öffnen" title="TSV Havelse – Fußballseite öffnen"><img class="club-logo" src="https://commons.wikimedia.org/wiki/Special:FilePath/TSV_Havelse_Logo.svg" alt="TSV Havelse"></a><a class="header-club-link" href="#volleyball" onclick="showPage('volleyball');return false" aria-label="Volleyball-Frösche in der App öffnen" title="Volleyball-Frösche TV Lohnde öffnen"><img src="./tv-lohnde-volleyball-froesche.jpg" alt="Volleyball-Frösche TV Lohnde"></a></div><div class="header-link-row header-commute-row" aria-label="Arbeitsweg"><a class="header-club-link commute-shortcut" href="https://www.bahn.de/buchung/fahrplan/suche#sts=true&so=Dedensen-G%C3%BCmmer&zo=Stadthagen&soid=O%3DDedensen-G%C3%BCmmer&zoid=O%3DStadthagen" target="_blank" rel="noopener" aria-label="Bahn Hinfahrt Dedensen-Gümmer nach Stadthagen" title="Bahn · Hinfahrt Dedensen/Gümmer → Stadthagen"><span class="commute-emoji">🚆</span><span class="commute-label">Zug <span aria-hidden="true">→</span></span></a><a class="header-club-link commute-shortcut" href="https://www.bahn.de/buchung/fahrplan/suche#sts=true&so=Stadthagen&zo=Dedensen-G%C3%BCmmer&soid=O%3DStadthagen&zoid=O%3DDedensen-G%C3%BCmmer" target="_blank" rel="noopener" aria-label="Bahn Rückfahrt Stadthagen nach Dedensen-Gümmer" title="Bahn · Rückfahrt Stadthagen → Dedensen/Gümmer"><span class="commute-emoji">🚆</span><span class="commute-label">Zug <span aria-hidden="true">←</span></span></a><a class="header-club-link commute-shortcut" href="https://www.google.com/maps/dir/?api=1&origin=Heideweg%207f%2C%20Seelze-Lohnde%2C%20Deutschland&destination=Schachtstra%C3%9Fe%2053b%2C%20Stadthagen%2C%20Deutschland&travelmode=driving" target="_blank" rel="noopener" aria-label="Auto Hinfahrt Heideweg 7F Lohnde nach Schachtstraße 53B Stadthagen" title="Auto · Heideweg 7F → Schachtstraße 53B"><span class="commute-emoji">🚗</span><span class="commute-label">Auto <span aria-hidden="true">→</span></span></a><a class="header-club-link commute-shortcut" href="https://www.google.com/maps/dir/?api=1&origin=Schachtstra%C3%9Fe%2053b%2C%20Stadthagen%2C%20Deutschland&destination=Heideweg%207f%2C%20Seelze-Lohnde%2C%20Deutschland&travelmode=driving" target="_blank" rel="noopener" aria-label="Auto Rückfahrt Schachtstraße 53B Stadthagen nach Heideweg 7F Lohnde" title="Auto · Schachtstraße 53B → Heideweg 7F"><span class="commute-emoji">🚗</span><span class="commute-label">Auto <span aria-hidden="true">←</span></span></a></div></div></div></header>
