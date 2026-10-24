@@ -1096,8 +1096,9 @@ renderCustomCountdowns();
 <style id="dashboard-weather-weekend-inline">
 /* Wetter und Wochenend-Countdown teilen sich eine kompakte Zeile; bestehende Dashboard-Karten bleiben unangetastet. */
 .dashboard-top-widgets{display:flex;align-items:stretch;justify-content:flex-end;gap:10px;margin:0 0 12px;min-width:0}
-.dashboard-top-widgets .dashboard-title-compact{flex:0 0 auto;align-self:flex-start;margin:0!important;min-height:0}
-.dashboard-top-widgets .weekend-countdown-card{flex:1 1 260px;min-width:0;max-width:430px;margin:0;padding:10px 13px;border-radius:15px}
+.dashboard-top-widgets .dashboard-title-compact{flex:1 1 0;min-width:0;align-self:stretch;margin:0!important;min-height:0}
+.dashboard-top-widgets .weather-chip{width:100%;max-width:none;min-height:100%;box-sizing:border-box}
+.dashboard-top-widgets .weekend-countdown-card{flex:1 1 0;min-width:0;max-width:none;margin:0;padding:10px 13px;border-radius:15px;box-sizing:border-box}
 .dashboard-top-widgets .weekend-countdown-card:after{font-size:34px;right:5px;bottom:-10px}
 .dashboard-top-widgets .weekend-countdown-top{gap:5px;font-size:.7rem}
 .dashboard-top-widgets .weekend-countdown-top #weekendCountdownIcon{font-size:1rem}
@@ -1108,9 +1109,9 @@ renderCustomCountdowns();
 .dashboard-top-widgets .weekend-countdown-bottom{margin-top:5px;gap:4px;font-size:.62rem}
 .dashboard-top-widgets .weekend-countdown-bottom strong{font-size:.68rem}
 @media(max-width:600px){
- .dashboard-top-widgets{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:start;gap:7px;margin-bottom:10px}
- .dashboard-top-widgets .dashboard-title-compact{justify-content:flex-start;min-width:0}
- .dashboard-top-widgets .weather-chip{max-width:145px;gap:6px;padding:7px 8px;border-radius:12px}
+ .dashboard-top-widgets{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:stretch;gap:7px;margin-bottom:10px}
+ .dashboard-top-widgets .dashboard-title-compact{justify-content:stretch;align-self:stretch;min-width:0;width:100%}
+ .dashboard-top-widgets .weather-chip{width:100%;max-width:none;min-width:0;gap:6px;padding:7px 8px;border-radius:12px;box-sizing:border-box}
  .dashboard-top-widgets .weather-chip .weather-chip-icon{font-size:1.25rem}
  .dashboard-top-widgets .weather-chip strong{font-size:.9rem}
  .dashboard-top-widgets .weather-chip small{font-size:.66rem;line-height:1.15}
@@ -1122,7 +1123,7 @@ renderCustomCountdowns();
  .dashboard-top-widgets .weekend-countdown-bottom{font-size:.55rem;gap:2px;margin-top:5px}
  .dashboard-top-widgets .weekend-countdown-bottom strong{font-size:.6rem}
 }
-@media(max-width:370px){.dashboard-top-widgets{grid-template-columns: minmax(95px,.75fr) minmax(0,1.25fr);gap:5px}.dashboard-top-widgets .weather-chip{padding:6px;gap:4px}.dashboard-top-widgets .weekend-countdown-card p{font-size:.61rem}}
+@media(max-width:370px){.dashboard-top-widgets{grid-template-columns:repeat(2,minmax(0,1fr));gap:5px}.dashboard-top-widgets .weather-chip{padding:6px;gap:4px}.dashboard-top-widgets .weekend-countdown-card p{font-size:.61rem}}
 </style>
 
 <div id="jokeOfDayModal" class="joke-modal" hidden role="dialog" aria-modal="true" aria-labelledby="jokeModalTitle">
